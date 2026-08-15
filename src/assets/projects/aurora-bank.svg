@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1500" width="1200" height="1500" role="img" aria-label="Aurora Bank">
+  <defs>
+    <linearGradient id="ab-wash" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5AD7FF" stop-opacity=".26"/>
+      <stop offset=".55" stop-color="#0A6C91" stop-opacity=".08"/>
+      <stop offset="1" stop-color="#05070A" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="ab-glow" cx=".72" cy=".26" r=".62">
+      <stop offset="0" stop-color="#5AD7FF" stop-opacity=".34"/>
+      <stop offset="1" stop-color="#5AD7FF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ab-bar" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#5AD7FF" stop-opacity=".18"/>
+      <stop offset="1" stop-color="#5AD7FF" stop-opacity=".85"/>
+    </linearGradient>
+    <linearGradient id="ab-foot" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#05070A" stop-opacity="0"/>
+      <stop offset="1" stop-color="#05070A" stop-opacity=".92"/>
+    </linearGradient>
+    <pattern id="ab-grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M60 0H0v60" fill="none" stroke="#5AD7FF" stroke-opacity=".1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="1500" fill="#080D12"/>
+  <rect width="1200" height="1500" fill="url(#ab-grid)"/>
+  <rect width="1200" height="1500" fill="url(#ab-wash)"/>
+  <rect width="1200" height="1500" fill="url(#ab-glow)"/>
+
+  <circle cx="880" cy="360" r="300" fill="none" stroke="#5AD7FF" stroke-opacity=".2" stroke-width="2"/>
+  <circle cx="880" cy="360" r="196" fill="none" stroke="#5AD7FF" stroke-opacity=".12" stroke-width="2"/>
+
+  <g transform="translate(150 250)">
+    <rect width="560" height="330" rx="26" fill="#0B1219" fill-opacity=".92" stroke="#5AD7FF" stroke-opacity=".38" stroke-width="2"/>
+    <rect x="44" y="52" width="76" height="56" rx="10" fill="#5AD7FF" fill-opacity=".24" stroke="#5AD7FF" stroke-opacity=".55"/>
+    <path d="M44 80h76M82 52v56" stroke="#5AD7FF" stroke-opacity=".45"/>
+    <text x="44" y="212" font-family="monospace" font-size="62" font-weight="700" fill="#F4F8FA" fill-opacity=".92">R$ 48.920</text>
+    <rect x="44" y="248" width="220" height="10" rx="5" fill="#5AD7FF" fill-opacity=".38"/>
+    <rect x="44" y="278" width="132" height="10" rx="5" fill="#F4F8FA" fill-opacity=".14"/>
+    <circle cx="486" cy="272" r="26" fill="#5AD7FF" fill-opacity=".7"/>
+    <circle cx="446" cy="272" r="26" fill="#F4F8FA" fill-opacity=".22"/>
+  </g>
+
+  <g transform="translate(150 700)">
+    <path d="M0 300h900" stroke="#F4F8FA" stroke-opacity=".12"/>
+    <rect x="0" y="196" width="72" height="104" rx="6" fill="url(#ab-bar)" opacity=".55"/>
+    <rect x="112" y="150" width="72" height="150" rx="6" fill="url(#ab-bar)" opacity=".7"/>
+    <rect x="224" y="212" width="72" height="88" rx="6" fill="url(#ab-bar)" opacity=".5"/>
+    <rect x="336" y="96" width="72" height="204" rx="6" fill="url(#ab-bar)" opacity=".85"/>
+    <rect x="448" y="132" width="72" height="168" rx="6" fill="url(#ab-bar)" opacity=".7"/>
+    <rect x="560" y="40" width="72" height="260" rx="6" fill="url(#ab-bar)"/>
+    <path d="M36 232 148 186 260 244 372 132 484 168 596 76" fill="none" stroke="#F4F8FA" stroke-opacity=".55" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="596" cy="76" r="12" fill="#5AD7FF"/>
+  </g>
+
+  <text x="150" y="1230" font-family="monospace" font-size="150" font-weight="700" fill="#5AD7FF" fill-opacity=".9" letter-spacing="8">AB</text>
+  <rect x="150" y="1290" width="300" height="6" rx="3" fill="#5AD7FF" fill-opacity=".5"/>
+
+  <rect y="1100" width="1200" height="400" fill="url(#ab-foot)"/>
+</svg>

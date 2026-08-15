@@ -1,0 +1,883 @@
+/* ===========================================================================
+   NAVBAR — placa trapezoidal com o logotipo e os links sempre visiveis
+
+   Sem abrir/fechar: o estado da barra e unico. Os links das secoes ficam lado
+   a lado da placa, dois de cada lado, na mesma linha.
+
+   A linha e uma grade de 3 colunas. A do meio tem exatamente a largura da
+   placa: assim os links nunca alcancam a logo, e como as colunas laterais sao
+   iguais (1fr), a coluna central fica centrada na viewport independentemente
+   das larguras do indicador e do CTA — com flex simples ela penderia para o
+   lado do elemento mais estreito.
+   ========================================================================= */
+
+.nav {
+  --nav-row-h: 76px;
+  --nav-plate-h: 44px;
+  --nav-plate-w: 248px;
+  --nav-logo-h: 30px;
+  --nav-skew: 24px;
+  --nav-side: max(20px, calc((100vw - var(--max-width)) / 2));
+
+  position: fixed;
+  z-index: 90;
+  top: 0;
+  left: 0;
+  width: 100%;
+  max-width: 100%;
+  /* so os filhos interativos capturam ponteiro; o resto da faixa deixa o
+     conteudo da pagina passar */
+  pointer-events: none;
+}
+
+/* --- barra --------------------------------------------------------------- */
+
+.nav__bar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  background: rgba(5, 6, 8, 0.82);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(244, 248, 250, 0.1);
+  pointer-events: auto;
+  transition: background 0.45s ease;
+}
+
+.nav__row {
+  flex: 0 0 auto;
+  height: var(--nav-row-h);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--nav-plate-w) minmax(0, 1fr);
+  align-items: center;
+  padding: 0 var(--nav-side);
+  transition: height 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.nav__side {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-width: 0;
+}
+
+.nav__side--left {
+  grid-column: 1;
+}
+
+.nav__side--right {
+  grid-column: 3;
+}
+
+.nav.is-scrolled {
+  --nav-row-h: 62px;
+}
+
+.nav.is-scrolled .nav__bar {
+  background: rgba(5, 6, 8, 0.94);
+}
+
+/* fio de luz varrendo a base da barra */
+.nav__scan {
+  position: absolute;
+  inset: auto 0 -1px;
+  height: 1px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.nav__scan i {
+  display: block;
+  width: 18%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0.8;
+}
+
+/* --- indicador de secao (esquerda) --------------------------------------- */
+
+.nav__where {
+  display: inline-flex;
+  align-self: center;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  color: rgba(244, 248, 250, 0.5);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.nav__where i {
+  width: 5px;
+  height: 5px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--counter);
+  box-shadow: 0 0 10px var(--counter);
+  animation: nav-pulse 2.4s ease-in-out infinite;
+}
+
+.nav__where span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@keyframes nav-pulse {
+  50% {
+    opacity: 0.32;
+    transform: scale(0.7);
+  }
+}
+
+/* --- CTA (direita) ------------------------------------------------------- */
+
+.nav__cta {
+  position: relative;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-self: center;
+  align-items: center;
+  gap: 9px;
+  height: 34px;
+  padding: 0 16px;
+  overflow: hidden;
+  color: var(--void);
+  background: var(--accent);
+  border-radius: 2px;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition:
+    background 0.35s ease,
+    color 0.35s ease;
+}
+
+.nav__cta i {
+  font-style: normal;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.nav__cta:hover {
+  background: var(--text);
+}
+
+.nav__cta:hover i {
+  transform: translate(3px, -3px);
+}
+
+.nav__cta:focus-visible,
+.nav__link:focus-visible,
+.nav__plate:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* --- links: mesma linha da placa ----------------------------------------- */
+
+.nav__group {
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 2.2vw, 36px);
+  min-width: 0;
+}
+
+.nav__group--left {
+  justify-content: flex-end;
+}
+
+.nav__group--right {
+  justify-content: flex-start;
+}
+
+.nav__link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  color: rgba(244, 248, 250, 0.66);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  touch-action: manipulation;
+  transition: color 0.3s ease;
+}
+
+.nav__link:hover,
+.nav__link.is-current {
+  color: var(--text);
+}
+
+/* Fio vertical acima do rotulo, fora do fluxo: como item flex ele empurrava
+   o texto para baixo e o rotulo deixava de ficar no eixo da logo (11px de
+   desvio). Absoluto, ele e puramente decorativo — a caixa do link continua
+   sendo so o texto, que assim centra junto com a placa em qualquer altura de
+   barra, inclusive quando ela compacta no scroll. */
+.nav__thread {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin: 0 0 7px -0.5px;
+  width: 1px;
+  height: 13px;
+  background: linear-gradient(
+    to bottom,
+    rgba(90, 215, 255, 0.75),
+    rgba(90, 215, 255, 0.05)
+  );
+  transition:
+    background 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.nav__link:hover .nav__thread,
+.nav__link.is-current .nav__thread {
+  background: linear-gradient(to bottom, var(--accent), rgba(90, 215, 255, 0.1));
+  box-shadow: 0 0 10px rgba(90, 215, 255, 0.5);
+}
+
+.nav__link.is-current::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 -7px;
+  height: 1px;
+  background: var(--accent);
+  box-shadow: 0 0 10px rgba(90, 215, 255, 0.7);
+}
+
+/* --- placa trapezoidal --------------------------------------------------- */
+
+/* Trilho sobreposto a linha: a placa fica no mesmo eixo vertical dos links
+   e, por estar fora da barra, o brilho dela nao sofre recorte. */
+.nav__rail {
+  position: absolute;
+  z-index: 3;
+  inset: 0 0 auto;
+  height: var(--nav-row-h);
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  transition: height 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.nav__plate {
+  position: relative;
+  width: var(--nav-plate-w);
+  height: var(--nav-plate-h);
+  display: grid;
+  place-items: center;
+  pointer-events: auto;
+  touch-action: manipulation;
+}
+
+/* Moldura e interior sao duas camadas com o mesmo recorte: clip-path corta
+   qualquer border, entao a "borda" de 1px e a camada de baixo aparecendo. */
+.nav__plate::before,
+.nav__plate::after {
+  content: "";
+  position: absolute;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    calc(100% - var(--nav-skew)) 100%,
+    var(--nav-skew) 100%
+  );
+}
+
+.nav__plate::before {
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(90, 215, 255, 0.62),
+    rgba(90, 215, 255, 0.14)
+  );
+  transition: background 0.4s ease;
+}
+
+.nav__plate::after {
+  inset: 1px;
+  background: rgba(5, 6, 8, 0.94);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+}
+
+.nav__plate:hover::before {
+  background: linear-gradient(
+    180deg,
+    rgba(90, 215, 255, 0.95),
+    rgba(90, 215, 255, 0.28)
+  );
+}
+
+/* --- logotipo e monograma ------------------------------------------------ */
+
+.nav__mark,
+.nav__logo {
+  grid-area: 1 / 1;
+  position: relative;
+  z-index: 1;
+}
+
+.nav__logo {
+  display: block;
+  width: auto;
+  height: var(--nav-logo-h);
+  filter: drop-shadow(0 0 16px rgba(90, 215, 255, 0.28));
+}
+
+/* O monograma so entra onde nao ha largura para o logotipo (ver o breakpoint
+   estreito la embaixo). */
+.nav__mark {
+  display: none;
+  font-size: 0;
+  line-height: 1;
+  text-align: center;
+  color: var(--text);
+  text-shadow: 0 0 18px rgba(90, 215, 255, 0.35);
+}
+
+/* vertical-align: top + a mesma line-height alinham os glifos pelo topo da
+   linha; sem isso cada letra cria a propria linha de base */
+.nav__letter {
+  display: inline-block;
+  vertical-align: top;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+/* Com "Planos" na barra a coluna da esquerda passou a carregar tres links
+   alem do indicador. Entre ~900 e 1080px a soma nao cabe na metade util da
+   linha, e o primeiro a ceder tem que ser o rotulo: ele e decorativo — a
+   secao atual ja fica marcada no proprio link. O ponto luminoso continua. */
+@media (max-width: 1080px) {
+  .nav__where span {
+    display: none;
+  }
+}
+
+/* --- tablet / mobile ------------------------------------------------------
+   Nao ha largura para links dos dois lados da logo aqui. `display: contents`
+   dissolve os agrupadores laterais para que indicador, links e CTA virem
+   itens diretos da grade e possam ser recolocados por areas: linha de cima
+   com indicador e CTA, linha de baixo com os quatro links numa faixa so. */
+
+@media (max-width: 900px) {
+  .nav {
+    --nav-row-h: 54px;
+    --nav-plate-h: 36px;
+    --nav-plate-w: 200px;
+    --nav-logo-h: 24px;
+    --nav-skew: 18px;
+  }
+
+  .nav__side {
+    display: contents;
+  }
+
+  .nav__row {
+    height: auto;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: var(--nav-row-h) auto;
+    grid-template-areas:
+      "where cta"
+      "gleft gright";
+    padding: 0;
+  }
+
+  /* justify-self: start encolhe a caixa ate o conteudo. Sem isso ela ocupa a
+     coluna inteira (metade da tela) mesmo com o rotulo oculto, sobrando um
+     bloco vazio por cima da area da placa. */
+  .nav__where {
+    grid-area: where;
+    justify-self: start;
+    padding-left: 20px;
+  }
+
+  .nav__cta {
+    grid-area: cta;
+    justify-self: end;
+    margin-right: 20px;
+  }
+
+  .nav__group {
+    /* o topo abre espaco para o fio, que sobe acima do texto */
+    padding: 18px 0 13px;
+    gap: clamp(12px, 3vw, 22px);
+  }
+
+  .nav__group--left {
+    grid-area: gleft;
+    justify-content: flex-end;
+    padding-right: clamp(6px, 1.5vw, 11px);
+  }
+
+  .nav__group--right {
+    grid-area: gright;
+    justify-content: flex-start;
+    padding-left: clamp(6px, 1.5vw, 11px);
+  }
+
+  .nav__link {
+    font-size: 11px;
+  }
+
+  .nav__thread {
+    height: 10px;
+    margin-bottom: 6px;
+  }
+
+  .nav__link.is-current::after {
+    inset: auto 0 -5px;
+  }
+
+  .nav__where span {
+    display: none;
+  }
+}
+
+@media (max-width: 620px) {
+  .nav {
+    --nav-plate-w: 118px;
+  }
+
+  /* Marca à esquerda e ação à direita: cada controle preserva sua área sem
+     disputar o centro quando a viewport fica estreita. */
+  .nav__rail {
+    place-items: center start;
+    padding-left: 14px;
+    padding-right: 0;
+  }
+
+  .nav__where {
+    display: none;
+  }
+
+  .nav__logo {
+    display: block;
+    height: 19px;
+  }
+
+  .nav__mark {
+    display: none;
+  }
+
+  .nav__letter {
+    font-size: 13px;
+  }
+
+  .nav__cta {
+    height: 30px;
+    padding: 0 12px;
+    font-size: 9px;
+  }
+
+  .nav__link {
+    font-size: 10px;
+    letter-spacing: 0.06em;
+  }
+}
+
+@media (max-width: 430px) {
+  .nav__rail {
+    padding-left: 10px;
+    padding-right: 0;
+  }
+
+  .nav__cta {
+    height: 28px;
+    margin-right: 14px;
+    padding-inline: 9px;
+    font-size: 8px;
+  }
+
+  .nav__cta i {
+    display: none;
+  }
+
+  .nav__group {
+    gap: 8px;
+  }
+
+  .nav__group--left {
+    padding-right: 5px;
+  }
+
+  .nav__group--right {
+    padding-left: 5px;
+  }
+
+  .nav__link {
+    font-size: 9px;
+    letter-spacing: 0.035em;
+  }
+}
+
+@media (max-width: 350px) {
+  .nav {
+    --nav-plate-w: 104px;
+  }
+
+  .nav__cta {
+    width: 34px;
+    margin-right: 9px;
+    justify-content: center;
+    padding-inline: 0;
+    font-size: 7.5px;
+    letter-spacing: 0.08em;
+  }
+
+  .nav__cta span {
+    display: none;
+  }
+
+  .nav__cta i {
+    display: block;
+  }
+
+  .nav__logo {
+    height: 17px;
+  }
+
+  .nav__group {
+    gap: 6px;
+  }
+
+  .nav__link {
+    font-size: 8.5px;
+  }
+}
+
+/* --- menu hambúrguer ---------------------------------------------------- */
+
+.nav__toggle,
+.nav__backdrop,
+.nav__mobile-panel {
+  display: none;
+}
+
+.nav__toggle:focus-visible,
+.nav__mobile-link:focus-visible,
+.nav__mobile-cta:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+html.nav-menu-open,
+html.nav-menu-open body {
+  overflow: hidden;
+}
+
+@media (max-width: 900px) {
+  .nav {
+    --nav-row-h: 64px;
+    --nav-plate-h: 38px;
+    --nav-plate-w: 190px;
+    --nav-logo-h: 23px;
+    --nav-skew: 18px;
+  }
+
+  .nav__row {
+    display: block;
+    height: var(--nav-row-h);
+    padding: 0;
+  }
+
+  .nav__side {
+    display: none;
+  }
+
+  .nav__rail {
+    z-index: 3;
+    height: var(--nav-row-h);
+    place-items: center start;
+    padding: 0 0 0 18px;
+  }
+
+  .nav__logo {
+    display: block;
+    height: var(--nav-logo-h);
+  }
+
+  .nav__toggle {
+    position: absolute;
+    z-index: 8;
+    top: 12px;
+    right: 18px;
+    width: 44px;
+    height: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 0;
+    border: 1px solid rgba(90, 215, 255, 0.28);
+    border-radius: 3px;
+    color: var(--text);
+    background: rgba(5, 6, 8, 0.72);
+    cursor: pointer;
+    pointer-events: auto;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      border-color 0.3s ease,
+      background 0.3s ease;
+  }
+
+  .nav__toggle:hover,
+  .nav.is-menu-open .nav__toggle {
+    border-color: rgba(90, 215, 255, 0.7);
+    background: rgba(13, 19, 24, 0.96);
+  }
+
+  .nav__toggle span {
+    display: block;
+    width: 19px;
+    height: 1px;
+    background: currentColor;
+    box-shadow: 0 0 8px rgba(90, 215, 255, 0.34);
+    transform-origin: center;
+    transition:
+      transform 0.42s cubic-bezier(0.2, 0.8, 0.2, 1),
+      opacity 0.25s ease;
+  }
+
+  .nav.is-menu-open .nav__toggle span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+
+  .nav.is-menu-open .nav__toggle span:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+
+  .nav.is-menu-open .nav__toggle span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  .nav__backdrop {
+    position: fixed;
+    z-index: 4;
+    inset: 0;
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    background: rgba(1, 3, 5, 0.7);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    pointer-events: none;
+    transition:
+      opacity 0.45s ease,
+      visibility 0s linear 0.45s;
+  }
+
+  .nav__mobile-panel {
+    position: fixed;
+    z-index: 6;
+    top: 0;
+    right: 0;
+    width: min(88vw, 390px);
+    max-width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    padding: 92px 24px 24px;
+    overflow-y: auto;
+    visibility: hidden;
+    opacity: 0;
+    transform: translate3d(104%, 0, 0);
+    border-left: 1px solid rgba(90, 215, 255, 0.16);
+    background:
+      radial-gradient(circle at 90% 14%, rgba(10, 108, 145, 0.2), transparent 34%),
+      linear-gradient(155deg, rgba(13, 19, 24, 0.99), rgba(3, 6, 9, 0.995));
+    box-shadow: -32px 0 90px rgba(0, 0, 0, 0.56);
+    pointer-events: none;
+    transition:
+      transform 0.62s cubic-bezier(0.72, 0, 0.18, 1),
+      opacity 0.35s ease,
+      visibility 0s linear 0.62s;
+  }
+
+  .nav.is-menu-open .nav__backdrop,
+  .nav.is-menu-open .nav__mobile-panel {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    transition-delay: 0s;
+  }
+
+  .nav.is-menu-open .nav__mobile-panel {
+    transform: translate3d(0, 0, 0);
+  }
+
+  .nav__mobile-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(244, 248, 250, 0.1);
+    color: rgba(244, 248, 250, 0.5);
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+  }
+
+  .nav__mobile-head i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--counter);
+    box-shadow: 0 0 12px var(--counter);
+  }
+
+  .nav__mobile-links {
+    display: flex;
+    flex-direction: column;
+    margin-top: 22px;
+  }
+
+  .nav__mobile-link {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    min-height: 72px;
+    border-bottom: 1px solid rgba(244, 248, 250, 0.08);
+    color: rgba(244, 248, 250, 0.72);
+    opacity: 0;
+    transform: translateX(28px);
+    transition:
+      color 0.3s ease,
+      border-color 0.3s ease,
+      opacity 0.35s ease,
+      transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .nav.is-menu-open .nav__mobile-link {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .nav.is-menu-open .nav__mobile-link:nth-child(1) { transition-delay: 0.16s; }
+  .nav.is-menu-open .nav__mobile-link:nth-child(2) { transition-delay: 0.21s; }
+  .nav.is-menu-open .nav__mobile-link:nth-child(3) { transition-delay: 0.26s; }
+  .nav.is-menu-open .nav__mobile-link:nth-child(4) { transition-delay: 0.31s; }
+
+  .nav__mobile-link > span {
+    color: var(--accent);
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+  }
+
+  .nav__mobile-link strong {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: clamp(25px, 8vw, 34px);
+    font-weight: 500;
+    letter-spacing: -0.035em;
+  }
+
+  .nav__mobile-link > i {
+    color: rgba(90, 215, 255, 0.58);
+    font-size: 14px;
+    font-style: normal;
+    transition: transform 0.3s ease;
+  }
+
+  .nav__mobile-link:hover,
+  .nav__mobile-link.is-current {
+    color: var(--text);
+    border-color: rgba(90, 215, 255, 0.34);
+  }
+
+  .nav__mobile-link:hover > i {
+    transform: translate(3px, -3px);
+  }
+
+  .nav__mobile-cta {
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: auto;
+    padding: 0 18px;
+    color: var(--void);
+    background: var(--accent);
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .nav__mobile-cta i {
+    font-style: normal;
+  }
+
+  .nav__mobile-foot {
+    margin: 18px 0 0;
+    color: rgba(244, 248, 250, 0.34);
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 8px;
+    letter-spacing: 0.18em;
+  }
+}
+
+@media (max-width: 620px) {
+  .nav {
+    --nav-plate-w: 148px;
+    --nav-logo-h: 20px;
+  }
+
+  .nav__rail {
+    padding-left: 12px;
+  }
+}
+
+@media (max-width: 430px) {
+  .nav__mobile-panel {
+    width: 100%;
+    padding: 84px 18px 20px;
+    border-left: 0;
+  }
+
+  .nav__toggle {
+    right: 12px;
+  }
+
+  .nav__mobile-link {
+    min-height: 68px;
+  }
+}
+
+/* --- movimento reduzido -------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .nav__scan {
+    display: none;
+  }
+
+  .nav__where i {
+    animation: none;
+  }
+
+  .nav__toggle span,
+  .nav__backdrop,
+  .nav__mobile-panel,
+  .nav__mobile-link {
+    transition-duration: 0.01ms !important;
+  }
+}

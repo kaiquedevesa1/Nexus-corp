@@ -1,0 +1,221 @@
+/* ===========================================================================
+   SECTION GATE — a secao de cobertura e a propria mascara
+
+   A secao de destino (showcase) fica parada atras da secao de cobertura
+   (processo). A cobertura e fixada e uma faixa transparente se abre do centro
+   dela para fora, revelando o que ja estava atras. Nao ha troca de telas: a
+   proxima secao esteve ali o tempo todo.
+
+   A costura central repete o vocabulario da .process-line (1px, accent,
+   glow) — a linha que atravessa o processo vira a fresta que se abre.
+
+   Tudo aqui so vale com a classe .is-gated, aplicada pelo createSectionGate.js.
+   Sem JS, ou com prefers-reduced-motion, nao existe cobertura nenhuma.
+   ========================================================================= */
+
+/* --- secao de cobertura -------------------------------------------------- */
+
+.is-gated {
+  position: relative;
+  z-index: 3;
+  /* Precisa cobrir a viewport inteira: e ela que esconde a secao de tras.
+     Sem isto sobraria uma faixa mostrando a secao anterior (o processo tem
+     ~816px numa tela de 900). */
+  min-height: 100svh;
+  padding: 0;
+}
+
+/* Depois que a abertura termina a cobertura fica sobreposta ao alvo por
+   causa do translate residual do pin. Ja esta invisivel pela mascara; isto
+   tira ela tambem do hit-test e da pintura. */
+.is-gate-past {
+  visibility: hidden;
+}
+
+/* Recebe a mascara e o fundo opaco. O fundo NAO pode ficar na secao: ele
+   continuaria visivel quando a mascara abrisse, e nada seria revelado. */
+.gate-cover {
+  --gate-a: 50%;
+  --gate-b: 50%;
+
+  position: relative;
+  z-index: 0;
+  contain: paint;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(96px, 12vh, 150px)
+    max(24px, calc((100vw - var(--max-width)) / 2));
+  background:
+    radial-gradient(
+      circle at 70% 8%,
+      rgba(10, 108, 145, 0.12),
+      transparent 28%
+    ),
+    var(--void);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 var(--gate-a),
+    transparent var(--gate-a),
+    transparent var(--gate-b),
+    #000 var(--gate-b)
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 var(--gate-a),
+    transparent var(--gate-a),
+    transparent var(--gate-b),
+    #000 var(--gate-b)
+  );
+}
+
+/* --- camada de luz ------------------------------------------------------
+   Fica FORA de .gate-cover de proposito: a mascara vale para o elemento e
+   todos os descendentes, entao a luz da fresta seria apagada junto com o
+   conteudo que ela deveria estar iluminando. */
+
+.gate {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  overflow: hidden;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* --gate-center: onde a fresta abre. O JS alinha na .process-line quando ela
+   esta visivel, senao no centro da viewport durante o pin. */
+.gate__seam {
+  position: absolute;
+  top: var(--gate-center, 50%);
+  left: 0;
+  width: 100%;
+  height: 1px;
+  margin-top: -0.5px;
+  transform: scaleX(0.22);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--accent) 16%,
+    #f4f8fa 50%,
+    var(--accent) 84%,
+    transparent
+  );
+  box-shadow: 0 0 22px rgba(90, 215, 255, 0.8);
+  will-change: transform, opacity;
+}
+
+.gate__path {
+  display: none;
+}
+
+.gate__core {
+  position: absolute;
+  top: var(--gate-center, 50%);
+  left: 50%;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border: 1px solid rgba(90, 215, 255, 0.55);
+  border-radius: 50%;
+  box-shadow:
+    0 0 26px rgba(90, 215, 255, 0.45),
+    inset 0 0 14px rgba(90, 215, 255, 0.3);
+  will-change: transform, opacity;
+}
+
+/* Posicionado por inset/margin, nunca por transform: o GSAP e dono exclusivo
+   do transform destes elementos. */
+.gate__bloom {
+  position: absolute;
+  top: var(--gate-center, 50%);
+  left: 0;
+  width: 100%;
+  height: 44vh;
+  margin-top: -22vh;
+  background: radial-gradient(
+    ellipse 58% 50% at 50% 50%,
+    rgba(90, 215, 255, 0.3),
+    rgba(10, 108, 145, 0.1) 44%,
+    transparent 72%
+  );
+  filter: blur(26px);
+  will-change: transform, opacity;
+}
+
+/* --- alvo revelado ------------------------------------------------------ */
+
+/* Fica atras da cobertura enquanto ela estiver fixada. */
+.gate-target {
+  position: relative;
+  z-index: 0;
+  min-height: 100svh;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+@media (max-width: 700px) {
+  .is-gated-mobile .gate__seam {
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    margin: -0.5px 0 0;
+    transform: scaleX(0.08);
+    transform-origin: center;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--accent) 16%,
+      #f4f8fa 50%,
+      var(--accent) 84%,
+      transparent
+    );
+  }
+
+  .is-gated-mobile .gate__path {
+    position: absolute;
+    top: calc(100% - 100svh);
+    left: var(--gate-axis, 10%);
+    width: 1px;
+    height: 100svh;
+    display: block;
+    transform: scaleY(0);
+    transform-origin: center top;
+    background: linear-gradient(
+      180deg,
+      rgba(90, 215, 255, 0.08),
+      var(--accent) 58%,
+      #f4f8fa
+    );
+    box-shadow: 0 0 18px rgba(90, 215, 255, 0.72);
+    will-change: transform, opacity;
+  }
+
+  .is-gated-mobile .gate__core {
+    top: calc(100% - 100svh);
+    left: var(--gate-axis, 10%);
+  }
+
+  .is-gated-mobile .gate__bloom {
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 34vh;
+    margin: -17vh 0 0;
+    background: radial-gradient(
+      ellipse 58% 50% at 50% 50%,
+      rgba(90, 215, 255, 0.3),
+      rgba(10, 108, 145, 0.1) 44%,
+      transparent 72%
+    );
+  }
+
+  .gate__bloom {
+    filter: blur(20px);
+  }
+}

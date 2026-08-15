@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1500" width="1200" height="1500" role="img" aria-label="Vertex Store">
+  <defs>
+    <linearGradient id="vs-wash" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7C6CFF" stop-opacity=".28"/>
+      <stop offset=".55" stop-color="#7C6CFF" stop-opacity=".08"/>
+      <stop offset="1" stop-color="#05070A" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="vs-glow" cx=".3" cy=".28" r=".6">
+      <stop offset="0" stop-color="#7C6CFF" stop-opacity=".34"/>
+      <stop offset="1" stop-color="#7C6CFF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="vs-foot" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#05070A" stop-opacity="0"/>
+      <stop offset="1" stop-color="#05070A" stop-opacity=".92"/>
+    </linearGradient>
+    <pattern id="vs-grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M60 0H0v60" fill="none" stroke="#7C6CFF" stroke-opacity=".12"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="1500" fill="#0B0D16"/>
+  <rect width="1200" height="1500" fill="url(#vs-grid)"/>
+  <rect width="1200" height="1500" fill="url(#vs-wash)"/>
+  <rect width="1200" height="1500" fill="url(#vs-glow)"/>
+
+  <g transform="translate(600 470)">
+    <path d="M0-210 182-105 0 0-182-105Z" fill="#7C6CFF" fill-opacity=".32" stroke="#7C6CFF" stroke-opacity=".8" stroke-width="3"/>
+    <path d="M-182-105v210L0 210V0Z" fill="#0E1020" fill-opacity=".92" stroke="#7C6CFF" stroke-opacity=".55" stroke-width="3"/>
+    <path d="M182-105v210L0 210V0Z" fill="#07080F" fill-opacity=".92" stroke="#7C6CFF" stroke-opacity=".32" stroke-width="3"/>
+    <circle cx="0" cy="-210" r="14" fill="#F4F8FA"/>
+    <circle cx="-182" cy="-105" r="9" fill="#7C6CFF"/>
+    <circle cx="182" cy="-105" r="9" fill="#7C6CFF"/>
+  </g>
+
+  <g transform="translate(140 830)">
+    <rect width="240" height="180" rx="14" fill="#0E1020" fill-opacity=".7" stroke="#7C6CFF" stroke-opacity=".26" stroke-width="2"/>
+    <rect x="290" width="240" height="180" rx="14" fill="#0E1020" fill-opacity=".85" stroke="#7C6CFF" stroke-opacity=".6" stroke-width="2"/>
+    <rect x="580" width="240" height="180" rx="14" fill="#0E1020" fill-opacity=".7" stroke="#7C6CFF" stroke-opacity=".26" stroke-width="2"/>
+    <path d="M60 90h120M60 124h72" stroke="#7C6CFF" stroke-opacity=".4" stroke-width="8" stroke-linecap="round"/>
+    <path d="M350 90h120M350 124h72" stroke="#7C6CFF" stroke-opacity=".85" stroke-width="8" stroke-linecap="round"/>
+    <path d="M640 90h120M640 124h72" stroke="#7C6CFF" stroke-opacity=".4" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="410" cy="46" r="10" fill="#F4F8FA"/>
+  </g>
+
+  <g transform="translate(140 1120)">
+    <path d="M0 40h880" stroke="#7C6CFF" stroke-opacity=".28" stroke-width="2" stroke-dasharray="10 14"/>
+    <circle cx="0" cy="40" r="14" fill="#0E1020" stroke="#7C6CFF" stroke-width="3"/>
+    <circle cx="293" cy="40" r="14" fill="#0E1020" stroke="#7C6CFF" stroke-width="3"/>
+    <circle cx="586" cy="40" r="14" fill="#0E1020" stroke="#7C6CFF" stroke-width="3"/>
+    <circle cx="880" cy="40" r="16" fill="#7C6CFF"/>
+    <text x="0" y="122" font-family="monospace" font-size="32" fill="#F4F8FA" fill-opacity=".42" letter-spacing="7">CART / PAY / SHIP</text>
+  </g>
+
+  <text x="140" y="1340" font-family="monospace" font-size="150" font-weight="700" fill="#7C6CFF" fill-opacity=".9" letter-spacing="8">VS</text>
+
+  <rect y="1100" width="1200" height="400" fill="url(#vs-foot)"/>
+</svg>

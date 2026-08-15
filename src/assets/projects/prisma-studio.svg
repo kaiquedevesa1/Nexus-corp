@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1500" width="1200" height="1500" role="img" aria-label="Prisma Studio">
+  <defs>
+    <linearGradient id="ps-wash" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FF6B9D" stop-opacity=".26"/>
+      <stop offset=".55" stop-color="#FF6B9D" stop-opacity=".08"/>
+      <stop offset="1" stop-color="#05070A" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="ps-glow" cx=".5" cy=".26" r=".55">
+      <stop offset="0" stop-color="#FF6B9D" stop-opacity=".26"/>
+      <stop offset="1" stop-color="#FF6B9D" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ps-beam" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#F4F8FA" stop-opacity="0"/>
+      <stop offset="1" stop-color="#F4F8FA" stop-opacity=".85"/>
+    </linearGradient>
+    <linearGradient id="ps-foot" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#05070A" stop-opacity="0"/>
+      <stop offset="1" stop-color="#05070A" stop-opacity=".92"/>
+    </linearGradient>
+    <pattern id="ps-grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M60 0H0v60" fill="none" stroke="#FF6B9D" stroke-opacity=".12"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="1500" fill="#12080D"/>
+  <rect width="1200" height="1500" fill="url(#ps-grid)"/>
+  <rect width="1200" height="1500" fill="url(#ps-wash)"/>
+  <rect width="1200" height="1500" fill="url(#ps-glow)"/>
+
+  <path d="M120 400h300" stroke="url(#ps-beam)" stroke-width="6"/>
+  <path d="M600 200 830 600H370Z" fill="#1A0C13" fill-opacity=".85" stroke="#F4F8FA" stroke-opacity=".5" stroke-width="3"/>
+  <g stroke-width="6" stroke-linecap="round">
+    <path d="M700 460 1080 390" stroke="#FF6B9D"/>
+    <path d="M706 492 1080 470" stroke="#FF9E4A" stroke-opacity=".85"/>
+    <path d="M712 524 1080 550" stroke="#F4F8FA" stroke-opacity=".55"/>
+    <path d="M718 556 1080 630" stroke="#7C6CFF" stroke-opacity=".85"/>
+  </g>
+
+  <text x="120" y="890" font-family="monospace" font-size="230" font-weight="700" fill="#F4F8FA" fill-opacity=".92" letter-spacing="-6">Aa</text>
+  <text x="120" y="960" font-family="monospace" font-size="28" fill="#F4F8FA" fill-opacity=".38" letter-spacing="9">SPACE GROTESK / 600</text>
+
+  <g transform="translate(120 1030)">
+    <rect width="150" height="150" rx="12" fill="#FF6B9D"/>
+    <rect x="180" width="150" height="150" rx="12" fill="#7C6CFF"/>
+    <rect x="360" width="150" height="150" rx="12" fill="#FF9E4A"/>
+    <rect x="540" width="150" height="150" rx="12" fill="#F4F8FA" fill-opacity=".85"/>
+    <rect x="720" width="150" height="150" rx="12" fill="#1A0C13" stroke="#F4F8FA" stroke-opacity=".3" stroke-width="2"/>
+  </g>
+
+  <text x="120" y="1380" font-family="monospace" font-size="150" font-weight="700" fill="#FF6B9D" fill-opacity=".9" letter-spacing="8">PS</text>
+
+  <rect y="1100" width="1200" height="400" fill="url(#ps-foot)"/>
+</svg>

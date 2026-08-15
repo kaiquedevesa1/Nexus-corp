@@ -1,0 +1,20 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "space grotesk",
+        "createdAt": "2026-08-14T22:51:20.217Z",
+        "reason": "Tipografia incumbente do projeto: display face usada em todo o site (nav, hero, servicos, portfolio, contato) desde antes desta tarefa. Trocar a face e um rebrand, fora do escopo de um redesign de secao."
+      },
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "createdAt": "2026-08-14T22:51:20.304Z",
+        "reason": "Mesma face incumbente, grafia minuscula como aparece na URL do Google Fonts em index.html."
+      }
+    ]
+  }
+}

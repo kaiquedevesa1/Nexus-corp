@@ -1,0 +1,768 @@
+/* ===========================================================================
+   PORTFOLIO SHOWCASE — galeria horizontal premium (estilo 21st.dev)
+
+   Prefixo .pg- para nao colidir com a galeria 3D antiga (.portfolio-section
+   / .pf-*), que continua definida em style.css.
+
+   O bloco inteiro e uma coluna flex de 100svh: cabecalho com altura
+   automatica e o trilho ocupando a sobra. Assim o card nunca estoura a
+   viewport, seja num notebook de 700px ou num monitor de 1400px — a altura
+   do card e derivada do espaco restante, e a largura vem do aspect-ratio.
+   ========================================================================= */
+
+.pg {
+  --pg-gutter: max(24px, calc((100vw - var(--max-width)) / 2));
+  --pg-accent: var(--accent);
+  --pg-gap: clamp(16px, 1.8vw, 30px);
+  /* Espaco reservado para cabecalho + paddings da secao; o card fica com o
+     resto. Acompanha a viewport porque os paddings da secao sao em vh — uma
+     folga fixa sobraria em telas altas e sufocaria o card em telas baixas
+     (num 720p ela deixava o card com 275px e o trilho quase nao andava). */
+  --pg-head-allowance: clamp(370px, calc(215px + 23vh), 470px);
+
+  position: relative;
+  z-index: 1;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(104px, 13vh, 148px) 0 clamp(40px, 6vh, 74px);
+  /* Sem borda e sem base opaca: a secao virou uma janela para o mesmo fundo
+     que .plans e .process ja revelam (o do body). Um var(--void) proprio aqui
+     seria exatamente a mesma cor, mas a borda e os dois radiais ancorados
+     NESTA caixa eram o corte: o radial nascia com valor cheio na primeira
+     linha de pixels, contra o zero da secao de cima. A luz que morava aqui
+     foi para .pg-atmos, onde morre antes das bordas. */
+}
+
+/* --- atmosfera ---------------------------------------------------------- */
+
+.pg-atmos {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 18% 12%,
+      rgba(10, 108, 145, 0.14),
+      transparent 42%
+    ),
+    radial-gradient(
+      circle at 88% 84%,
+      rgba(90, 215, 255, 0.07),
+      transparent 46%
+    );
+  /* A mascara que costura a secao com as vizinhas: TODA luz daqui chega a zero
+     nas bordas de cima e de baixo. Vale para os radiais acima, para a .pg-aurora
+     (que nasce em top: -18% e antes era decepada em linha reta pelo overflow) e
+     para o .pg-flow do rodape. O miolo 12%-88% fica intacto, entao a atmosfera
+     da secao nao perde presenca — so deixa de ter aresta. */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 12%,
+    #000 88%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 12%,
+    #000 88%,
+    transparent
+  );
+}
+
+.pg-atmos::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  background-image:
+    linear-gradient(rgba(90, 215, 255, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(90, 215, 255, 0.16) 1px, transparent 1px);
+  background-size: 76px 76px;
+  -webkit-mask-image: radial-gradient(circle at 50% 42%, #000, transparent 74%);
+  mask-image: radial-gradient(circle at 50% 42%, #000, transparent 74%);
+}
+
+.pg-aurora {
+  position: absolute;
+  top: -18%;
+  right: -12%;
+  width: min(52vw, 680px);
+  aspect-ratio: 1.35;
+  border-radius: 46% 54% 60% 40% / 56% 38% 62% 44%;
+  background: radial-gradient(
+    circle at 58% 44%,
+    rgba(90, 215, 255, 0.18),
+    rgba(10, 108, 145, 0.06) 44%,
+    transparent 72%
+  );
+  filter: blur(24px);
+  opacity: 0.7;
+}
+
+.pg-flow {
+  position: absolute;
+  inset: auto 0 6%;
+  width: 100%;
+  height: 42%;
+  overflow: visible;
+}
+
+.pg-flow path {
+  fill: none;
+  stroke: rgba(90, 215, 255, 0.2);
+  stroke-width: 1.4;
+  stroke-dasharray: 2 12;
+  stroke-linecap: round;
+}
+
+.pg-flow__dot {
+  fill: var(--pg-accent);
+  filter: drop-shadow(0 0 8px rgba(90, 215, 255, 0.9));
+}
+
+/* --- cabecalho ---------------------------------------------------------- */
+
+.pg-head {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(24px, 4vw, 72px);
+  align-items: end;
+  padding: 0 var(--pg-gutter) clamp(28px, 4vh, 52px);
+}
+
+.pg-label {
+  display: block;
+  color: var(--pg-accent);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+}
+
+.pg-title {
+  max-width: 15ch;
+  margin: 18px 0 0;
+  perspective: 700px;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: clamp(32px, 4vw, 58px);
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  font-weight: 500;
+  text-wrap: balance;
+}
+
+/* Mascara por palavra (nao por linha): palavras nao rebentam no resize,
+   entao o clip continua correto sem re-split. */
+.pg-title .word {
+  overflow: hidden;
+  padding-bottom: 0.09em;
+  vertical-align: bottom;
+  /* a perspectiva precisa morar aqui: os .char sao filhos da palavra, e
+     perspective so alcanca os filhos diretos */
+  perspective: 600px;
+}
+
+.pg-title em {
+  color: rgba(244, 248, 250, 0.42);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.pg-copy {
+  max-width: 46ch;
+  margin: 20px 0 0;
+  color: var(--muted);
+  font-size: clamp(14px, 1.05vw, 16px);
+  line-height: 1.7;
+}
+
+.pg-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 14px;
+  width: clamp(180px, 20vw, 260px);
+}
+
+.pg-counter {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: "Space Grotesk", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+.pg-counter strong {
+  color: var(--text);
+  font-size: clamp(28px, 2.6vw, 40px);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+}
+
+.pg-counter span {
+  color: rgba(244, 248, 250, 0.38);
+  font-size: 13px;
+}
+
+.pg-rail {
+  position: relative;
+  width: 100%;
+  height: 1px;
+  background: rgba(244, 248, 250, 0.12);
+  overflow: hidden;
+}
+
+.pg-rail i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(0);
+  transform-origin: left center;
+  background: var(--pg-accent);
+  box-shadow: 0 0 14px rgba(90, 215, 255, 0.7);
+}
+
+.pg-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: rgba(244, 248, 250, 0.42);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.pg-hint::after {
+  content: "";
+  width: 26px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(90, 215, 255, 0.6), transparent);
+}
+
+/* --- trilho horizontal -------------------------------------------------- */
+
+.pg-viewport {
+  padding: 30px;
+  position: relative;
+  z-index: 2;
+  flex: 1 1 auto;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 3%,
+    #000 97%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 3%,
+    #000 97%,
+    transparent 100%
+  );
+}
+
+/* `flex: 0 0 auto` no trilho e obrigatorio: sem isso ele encolheria ate a
+   largura da viewport e offsetWidth deixaria de medir o conteudo real. */
+.pg-track {
+  flex: 0 0 auto;
+  align-self: center;
+  display: flex;
+  align-items: center;
+  gap: var(--pg-gap);
+  padding: 0 var(--pg-gutter);
+}
+
+/* A altura do card e deliberadamente uma formula fechada (viewport menos a
+   folga do cabecalho) em vez de `align-self: stretch`.
+   Motivo: o ScrollTrigger mede o pin com o layout temporariamente alterado
+   — nesse instante a coluna flex nao tem sobra, o card cai para a altura
+   minima, o trilho encolhe e o `end` do pin sai calculado a partir de uma
+   largura errada (o pin durava 60px em vez de ~1000px). Com altura
+   independente do flex, a medida e a mesma em qualquer momento. */
+.pg-card {
+  --mx: 50%;
+  --my: 50%;
+
+  flex: 0 0 auto;
+  align-self: center;
+  height: min(600px, max(260px, calc(100svh - var(--pg-head-allowance))));
+  aspect-ratio: 3 / 4;
+}
+
+.pg-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(244, 248, 250, 0.1);
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  transition:
+    border-color 0.5s ease,
+    box-shadow 0.5s ease,
+    transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+    filter 0.6s ease;
+  transform-style: preserve-3d;
+}
+
+/* Scanner holografico e canais RGB da anomalia digital. As imagens clonadas
+   repetem exatamente o crop da midia principal e so aparecem por milissegundos. */
+.pg-anomaly {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.pg-glitch {
+  position: absolute;
+  top: -4%;
+  left: -9%;
+  width: 118%;
+  height: 108%;
+  object-fit: cover;
+  opacity: 0;
+}
+
+.pg-glitch--red {
+  filter: sepia(1) saturate(8) hue-rotate(305deg) contrast(1.35);
+  mix-blend-mode: screen;
+}
+
+.pg-glitch--cyan {
+  filter: sepia(1) saturate(8) hue-rotate(125deg) contrast(1.35);
+  mix-blend-mode: screen;
+}
+
+.pg-scanner {
+  position: absolute;
+  top: -18%;
+  left: -8%;
+  width: 116%;
+  height: 18%;
+  opacity: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(90, 215, 255, 0.05) 34%,
+    rgba(90, 215, 255, 0.5) 92%,
+    rgba(244, 248, 250, 0.95)
+  );
+  border-bottom: 1px solid rgba(90, 215, 255, 0.95);
+  box-shadow: 0 8px 28px rgba(90, 215, 255, 0.3);
+  mix-blend-mode: screen;
+}
+
+.pg-signal {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 10px;
+  color: rgba(244, 248, 250, 0.84);
+  border: 1px solid rgba(90, 215, 255, 0.28);
+  border-radius: 999px;
+  background: rgba(5, 6, 8, 0.62);
+  backdrop-filter: blur(8px);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.pg-signal i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--counter);
+  box-shadow: 0 0 9px var(--counter);
+}
+
+/* Cartas fora de foco recuam meio tom — o destaque fica no card ativo
+   sem que as outras sumam. */
+.pg-card:not(.is-active) .pg-frame {
+  filter: brightness(0.74) saturate(0.82);
+}
+
+.pg-card.is-active .pg-frame {
+  border-color: rgba(90, 215, 255, 0.34);
+  box-shadow:
+    0 34px 90px rgba(0, 0, 0, 0.66),
+    0 0 42px rgba(90, 215, 255, 0.12);
+}
+
+/* linha de varredura no topo, mesmo idioma dos service-cards */
+.pg-frame::after {
+  content: "";
+  position: absolute;
+  z-index: 4;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(90, 215, 255, 0.85),
+      transparent
+    )
+    left top / 0 1px no-repeat;
+  transition: background-size 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+}
+
+.pg-media {
+  position: absolute;
+  inset: -4% -9%;
+}
+
+.pg-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.01);
+  transition: transform 0.85s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.pg-img--cubo {
+  object-position: 54% center;
+}
+
+.pg-img--massas {
+  object-position: center 44%;
+}
+
+.pg-img--nexora {
+  object-position: center 46%;
+}
+
+.pg-img--niveo {
+  object-position: center 43%;
+}
+
+/* overlay escuro obrigatorio: garante contraste do texto sobre a imagem */
+.pg-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to top,
+      rgba(5, 6, 8, 0.96) 2%,
+      rgba(5, 6, 8, 0.82) 30%,
+      rgba(5, 6, 8, 0.24) 62%,
+      rgba(5, 6, 8, 0.46) 100%
+    ),
+    radial-gradient(120% 78% at 50% 108%, rgba(5, 6, 8, 0.55), transparent 62%);
+  transition: opacity 0.55s ease;
+}
+
+.pg-glare {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  mix-blend-mode: screen;
+  background: radial-gradient(
+    260px circle at var(--mx) var(--my),
+    rgba(90, 215, 255, 0.18),
+    transparent 66%
+  );
+  transition: opacity 0.45s ease;
+}
+
+.pg-num {
+  position: absolute;
+  z-index: 3;
+  top: 18px;
+  left: 20px;
+  color: rgba(244, 248, 250, 0.5);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  font-variant-numeric: tabular-nums;
+}
+
+.pg-body {
+  position: absolute;
+  z-index: 3;
+  inset: auto 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 26px 24px 24px;
+}
+
+.pg.is-performing .pg-track,
+.pg.is-performing .pg-card,
+.pg.is-performing .pg-frame,
+.pg.is-performing .pg-glitch,
+.pg.is-performing .pg-scanner,
+.pg.is-performing .pg-media,
+.pg.is-performing .pg-body {
+  will-change: transform, opacity;
+}
+
+.pg-tags {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pg-cat {
+  padding: 5px 11px;
+  color: var(--pg-accent);
+  border: 1px solid rgba(90, 215, 255, 0.3);
+  border-radius: 999px;
+  background: rgba(5, 6, 8, 0.55);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.pg-year {
+  color: rgba(244, 248, 250, 0.45);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.pg-name {
+  margin: 0;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: clamp(21px, 1.7vw, 29px);
+  line-height: 1.06;
+  letter-spacing: -0.035em;
+  font-weight: 500;
+  text-wrap: balance;
+}
+
+.pg-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 42px;
+  margin-top: 6px;
+  padding: 0 18px;
+  overflow: hidden;
+  color: var(--text);
+  border: 1px solid rgba(244, 248, 250, 0.22);
+  border-radius: 999px;
+  background: rgba(5, 6, 8, 0.5);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition:
+    color 0.4s ease,
+    border-color 0.4s ease;
+}
+
+.pg-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateY(101%);
+  background: var(--pg-accent);
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.pg-btn span,
+.pg-btn i {
+  position: relative;
+  z-index: 1;
+}
+
+.pg-btn i {
+  font-style: normal;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.pg-btn:focus-visible {
+  outline: 2px solid var(--pg-accent);
+  outline-offset: 3px;
+}
+
+/* --- hover (so em ponteiro fino) ---------------------------------------- */
+
+@media (hover: hover) and (pointer: fine) {
+  .pg-card:hover .pg-frame {
+    transform: translateY(-6px);
+    border-color: rgba(90, 215, 255, 0.5);
+    filter: none;
+  }
+
+  .pg-card:hover .pg-frame::after {
+    background-size: 100% 1px;
+  }
+
+  .pg-card:hover .pg-img {
+    transform: scale(1.09);
+  }
+
+  .pg-card:hover .pg-overlay {
+    opacity: 0.86;
+  }
+
+  .pg-card:hover .pg-glare {
+    opacity: 1;
+  }
+
+  .pg-card:hover .pg-btn,
+  .pg-btn:hover {
+    color: var(--void);
+    border-color: transparent;
+  }
+
+  .pg-card:hover .pg-btn::before,
+  .pg-btn:hover::before {
+    transform: translateY(0);
+  }
+
+  .pg-card:hover .pg-btn i {
+    transform: translate(3px, -3px);
+  }
+}
+
+/* --- tablet / mobile: rolagem nativa com snap ---------------------------- */
+
+@media (max-width: 900px) {
+  .pg {
+    min-height: 0;
+    padding: clamp(88px, 12vh, 120px) 0 64px;
+  }
+
+  .pg-head {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 26px;
+  }
+
+  .pg-nav {
+    align-items: flex-start;
+    width: min(100%, 320px);
+  }
+
+  .pg-viewport {
+    min-height: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .pg-viewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pg-track {
+    align-self: auto;
+    max-height: none;
+    padding-inline: 20px;
+  }
+
+  .pg-card {
+    align-self: auto;
+    height: auto;
+    max-height: none;
+    min-height: 0;
+    width: min(74vw, 330px);
+    scroll-snap-align: center;
+  }
+
+  .pg-card:not(.is-active) .pg-frame {
+    filter: none;
+  }
+
+  .pg-flow {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .pg-card {
+    width: min(82vw, 320px);
+  }
+
+  .pg-body {
+    padding: 22px 20px 20px;
+  }
+}
+
+/* --- movimento reduzido: grade estatica --------------------------------- */
+
+.pg.is-static .pg-viewport {
+  display: block;
+  overflow: visible;
+  min-height: 0;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.pg.is-static .pg-track {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  align-self: auto;
+  height: auto;
+  max-height: none;
+  transform: none !important;
+}
+
+.pg.is-static .pg-card {
+  align-self: auto;
+  width: auto;
+  height: auto;
+  max-height: none;
+  min-height: 0;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.pg.is-static .pg-card:not(.is-active) .pg-frame {
+  filter: none;
+}
+
+.pg.is-static .pg-nav,
+.pg.is-static .pg-flow {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pg-anomaly {
+    display: none;
+  }
+
+  .pg {
+    min-height: 0;
+    padding-bottom: 96px;
+  }
+}

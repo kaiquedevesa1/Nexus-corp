@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1500" width="1200" height="1500" role="img" aria-label="Helix Health">
+  <defs>
+    <linearGradient id="hh-wash" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#70E1C1" stop-opacity=".26"/>
+      <stop offset=".6" stop-color="#70E1C1" stop-opacity=".08"/>
+      <stop offset="1" stop-color="#05070A" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="hh-glow" cx=".5" cy=".32" r=".58">
+      <stop offset="0" stop-color="#70E1C1" stop-opacity=".28"/>
+      <stop offset="1" stop-color="#70E1C1" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="hh-foot" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#05070A" stop-opacity="0"/>
+      <stop offset="1" stop-color="#05070A" stop-opacity=".92"/>
+    </linearGradient>
+    <pattern id="hh-grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M60 0H0v60" fill="none" stroke="#70E1C1" stroke-opacity=".12"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="1500" fill="#08120F"/>
+  <rect width="1200" height="1500" fill="url(#hh-grid)"/>
+  <rect width="1200" height="1500" fill="url(#hh-wash)"/>
+  <rect width="1200" height="1500" fill="url(#hh-glow)"/>
+
+  <g transform="translate(600 460)" fill="none" stroke-linecap="round">
+    <circle r="250" stroke="#F4F8FA" stroke-opacity=".07" stroke-width="26"/>
+    <circle r="250" stroke="#70E1C1" stroke-width="26" stroke-dasharray="1120 1571" transform="rotate(-90)"/>
+    <circle r="188" stroke="#F4F8FA" stroke-opacity=".07" stroke-width="22"/>
+    <circle r="188" stroke="#70E1C1" stroke-opacity=".6" stroke-width="22" stroke-dasharray="700 1181" transform="rotate(-90)"/>
+    <circle r="128" stroke="#F4F8FA" stroke-opacity=".07" stroke-width="18"/>
+    <circle r="128" stroke="#F4F8FA" stroke-opacity=".5" stroke-width="18" stroke-dasharray="330 804" transform="rotate(-90)"/>
+    <text x="0" y="24" text-anchor="middle" font-family="monospace" font-size="72" font-weight="700" fill="#F4F8FA" fill-opacity=".92" stroke="none">92%</text>
+  </g>
+
+  <g transform="translate(120 760)">
+    <path d="M0 90h180l40-84 62 168 46-108 40 24h592" fill="none" stroke="#70E1C1" stroke-opacity=".9" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="282" cy="174" r="12" fill="#F4F8FA"/>
+  </g>
+
+  <g transform="translate(120 950)">
+    <rect width="300" height="150" rx="16" fill="#0B1A16" fill-opacity=".85" stroke="#70E1C1" stroke-opacity=".28" stroke-width="2"/>
+    <rect x="330" width="300" height="150" rx="16" fill="#0B1A16" fill-opacity=".85" stroke="#70E1C1" stroke-opacity=".28" stroke-width="2"/>
+    <rect x="660" width="300" height="150" rx="16" fill="#0B1A16" fill-opacity=".85" stroke="#70E1C1" stroke-opacity=".55" stroke-width="2"/>
+    <text x="34" y="66" font-family="monospace" font-size="28" fill="#F4F8FA" fill-opacity=".35">PACIENTES</text>
+    <text x="34" y="118" font-family="monospace" font-size="44" font-weight="700" fill="#70E1C1">12.4k</text>
+    <text x="364" y="66" font-family="monospace" font-size="28" fill="#F4F8FA" fill-opacity=".35">CONSULTAS</text>
+    <text x="364" y="118" font-family="monospace" font-size="44" font-weight="700" fill="#70E1C1">3.1k</text>
+    <text x="694" y="66" font-family="monospace" font-size="28" fill="#F4F8FA" fill-opacity=".35">UPTIME</text>
+    <text x="694" y="118" font-family="monospace" font-size="44" font-weight="700" fill="#F4F8FA">99.9</text>
+  </g>
+
+  <text x="120" y="1380" font-family="monospace" font-size="150" font-weight="700" fill="#70E1C1" fill-opacity=".9" letter-spacing="8">HH</text>
+
+  <rect y="1100" width="1200" height="400" fill="url(#hh-foot)"/>
+</svg>

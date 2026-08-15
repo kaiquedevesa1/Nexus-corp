@@ -1,0 +1,1467 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Nexus Corp — sites, sistemas e experiências digitais de alta performance."
+    />
+    <title>Nexus Corp — Digital Infrastructure</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    />
+
+    <!-- CSS do preloader fica inline no <head> de proposito: o restante do
+         estilo entra pelo bundle (style.css e importado pelo main.js), entao
+         so o que esta aqui e capaz de pintar a tela de carregamento no
+         primeiro frame, antes do JS existir. -->
+    <style>
+      .preloader {
+        position: fixed;
+        z-index: 9999;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: clamp(28px, 5vh, 46px);
+        background:
+          radial-gradient(
+            circle at 50% 42%,
+            rgba(10, 108, 145, 0.16),
+            transparent 58%
+          ),
+          #050608;
+        font-family: "Space Grotesk", Inter, sans-serif;
+        color: #f4f8fa;
+      }
+      .preloader__symbol {
+        display: block;
+        width: clamp(96px, 15vw, 158px);
+        height: auto;
+        overflow: visible;
+      }
+      /* Camada apagada: contorno visivel, zero cor. E o estado inicial que o
+         usuario ve enquanto o bundle ainda nem foi avaliado. */
+      .preloader__ghost path {
+        fill: rgba(244, 248, 250, 0.035);
+        stroke: rgba(244, 248, 250, 0.3);
+      }
+      .preloader__fill {
+        filter: drop-shadow(0 0 18px rgba(90, 215, 255, 0.35));
+      }
+      .preloader__meta {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+      }
+      .preloader__label {
+        color: rgba(244, 248, 250, 0.42);
+      }
+      .preloader__bar {
+        position: relative;
+        overflow: hidden;
+        width: clamp(120px, 22vw, 220px);
+        height: 1px;
+        background: rgba(244, 248, 250, 0.12);
+      }
+      .preloader__bar i {
+        position: absolute;
+        inset: 0;
+        display: block;
+        transform: scaleX(0);
+        transform-origin: left;
+        background: #5ad7ff;
+        box-shadow: 0 0 12px #5ad7ff;
+      }
+      .preloader__count {
+        min-width: 4ch;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        color: #5ad7ff;
+      }
+      .preloader__count b {
+        font-weight: inherit;
+      }
+      .preloader__count em {
+        font-style: normal;
+        opacity: 0.5;
+      }
+      /* Evita o "flash" do conteudo por tras enquanto o preloader esta ativo. */
+      body.loading {
+        overflow: hidden;
+      }
+    </style>
+
+    <!-- Sem JS ninguem tira o preloader do caminho: melhor nem mostra-lo. -->
+    <noscript>
+      <style>
+        .preloader {
+          display: none;
+        }
+        body.loading {
+          overflow: visible;
+        }
+      </style>
+    </noscript>
+  </head>
+  <body class="loading">
+    <!-- Preloader: o simbolo comeca so com o contorno e vai sendo preenchido
+         de baixo para cima conforme o carregamento avanca. O <rect> do
+         clipPath e o que o JS anima (src/createPreloader.js). -->
+    <div
+      class="preloader"
+      id="preloader"
+      role="status"
+      aria-live="polite"
+      aria-label="Carregando Nexus Corp"
+    >
+      <svg
+        class="preloader__symbol"
+        viewBox="0 0 390 470"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <defs>
+          <linearGradient
+            id="preloader-upper"
+            x1="159"
+            y1="37"
+            x2="341"
+            y2="385"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop offset="0" stop-color="#0D1318" />
+            <stop offset="0.5" stop-color="#0A6C91" />
+            <stop offset="1" stop-color="#5AD7FF" />
+          </linearGradient>
+
+          <linearGradient
+            id="preloader-lower"
+            x1="49"
+            y1="100"
+            x2="230"
+            y2="436"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop offset="0" stop-color="#5AD7FF" />
+            <stop offset="0.5" stop-color="#0A6C91" />
+            <stop offset="1" stop-color="#0D1318" />
+          </linearGradient>
+
+          <linearGradient id="preloader-edge" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#5AD7FF" stop-opacity="0.85" />
+            <stop offset="1" stop-color="#5AD7FF" stop-opacity="0" />
+          </linearGradient>
+
+          <!-- Recorte do progresso: sobe do rodape (y=470) ate o topo (y=0). -->
+          <clipPath id="preloader-clip" clipPathUnits="userSpaceOnUse">
+            <rect
+              id="preloader-clip-rect"
+              x="-20"
+              y="470"
+              width="430"
+              height="470"
+            />
+          </clipPath>
+
+          <!-- Mantem o brilho da linha de preenchimento dentro do simbolo. -->
+          <clipPath id="preloader-shape" clipPathUnits="userSpaceOnUse">
+            <path
+              d="M159 63 199 37 341 127 341 345 277 385 152 304 152 249 294 334 295 152Z"
+            />
+            <path
+              d="M102 100 49 131 49 345 197 436 230 413 95 330 95 159 238 249 238 190Z"
+            />
+          </clipPath>
+        </defs>
+
+        <g
+          class="preloader__ghost"
+          stroke-width="5.5"
+          stroke-linecap="square"
+          stroke-linejoin="miter"
+        >
+          <path
+            d="M159 63 199 37 341 127 341 345 277 385 152 304 152 249 294 334 295 152Z"
+          />
+          <path
+            d="M102 100 49 131 49 345 197 436 230 413 95 330 95 159 238 249 238 190Z"
+          />
+        </g>
+
+        <g class="preloader__fill" clip-path="url(#preloader-clip)">
+          <g
+            stroke="#F4F8FA"
+            stroke-width="5.5"
+            stroke-linecap="square"
+            stroke-linejoin="miter"
+          >
+            <path
+              fill="url(#preloader-upper)"
+              d="M159 63 199 37 341 127 341 345 277 385 152 304 152 249 294 334 295 152Z"
+            />
+            <path
+              fill="url(#preloader-lower)"
+              d="M102 100 49 131 49 345 197 436 230 413 95 330 95 159 238 249 238 190Z"
+            />
+          </g>
+
+          <g clip-path="url(#preloader-shape)">
+            <rect
+              id="preloader-edge-rect"
+              x="0"
+              y="470"
+              width="390"
+              height="54"
+              fill="url(#preloader-edge)"
+            />
+          </g>
+        </g>
+      </svg>
+
+      <div class="preloader__meta">
+        <span class="preloader__label">Nexus Corp</span>
+        <div class="preloader__bar"><i id="preloader-bar"></i></div>
+        <span class="preloader__count"
+          ><b id="preloader-count">0</b><em>%</em></span
+        >
+      </div>
+    </div>
+
+    <canvas id="bg-shader" aria-hidden="true"></canvas>
+    <div class="noise"></div>
+    <div class="page-progress"><span></span></div>
+
+    <!-- NAVBAR — logotipo ao centro com os links das seções sempre visíveis,
+         lado a lado dele. Para adicionar um item, duplique um .nav__link:
+         o indicador de seção e a marcação do ativo saem do href. -->
+    <header class="nav" aria-label="Navegação principal">
+      <div class="nav__bar">
+        <!-- Linha única em 3 colunas: a do meio tem a largura da placa, então
+             os links nunca alcançam a logo e ela fica centrada na viewport
+             sem depender das larguras do indicador e do CTA. -->
+        <div class="nav__row">
+          <div class="nav__side nav__side--left">
+            <span class="nav__where" aria-hidden="true">
+              <i></i><span>Digital Infrastructure</span>
+            </span>
+
+            <div class="nav__group nav__group--left">
+              <a
+                class="nav__link"
+                href="#services"
+                data-label="01 / Capacidades"
+              >
+                <i class="nav__thread" aria-hidden="true"></i>
+                Serviços
+              </a>
+              <a class="nav__link" href="#plans" data-label="02 / Planos">
+                <i class="nav__thread" aria-hidden="true"></i>
+                Planos
+              </a>
+              <a class="nav__link" href="#work" data-label="03 / Portfólio">
+                <i class="nav__thread" aria-hidden="true"></i>
+                Portfólio
+              </a>
+            </div>
+          </div>
+
+          <div class="nav__side nav__side--right">
+            <div class="nav__group nav__group--right">
+              <a class="nav__link" href="#process" data-label="04 / Processo">
+                <i class="nav__thread" aria-hidden="true"></i>
+                Processo
+              </a>
+              <a
+                class="nav__link"
+                href="https://wa.me/5519994853325?text=Ol%C3%A1%21%20Encontrei%20a%20Nexus%20Corp%20pelo%20site%20e%20gostaria%20de%20conversar%20sobre%20um%20projeto%20digital.%20Podem%20me%20ajudar%20a%20entender%20a%20melhor%20solu%C3%A7%C3%A3o%20para%20a%20minha%20ideia%3F"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Falar com a Nexus pelo WhatsApp"
+                data-label="05 / Contato"
+              >
+                <i class="nav__thread" aria-hidden="true"></i>
+                Contato
+              </a>
+            </div>
+
+            <a class="nav__cta" href="#contact">
+              <span>Iniciar projeto</span><i aria-hidden="true">↗</i>
+            </a>
+          </div>
+        </div>
+
+        <button
+          class="nav__toggle"
+          type="button"
+          aria-label="Abrir menu"
+          aria-expanded="false"
+          aria-controls="mobile-navigation"
+        >
+          <span></span><span></span><span></span>
+        </button>
+
+        <div class="nav__backdrop" data-nav-close aria-hidden="true"></div>
+
+        <div
+          class="nav__mobile-panel"
+          id="mobile-navigation"
+          aria-hidden="true"
+          inert
+        >
+          <div class="nav__mobile-head">
+            <span>MENU / NAVEGAÇÃO</span>
+            <i aria-hidden="true"></i>
+          </div>
+
+          <nav class="nav__mobile-links" aria-label="Navegação mobile">
+            <a
+              class="nav__mobile-link"
+              href="#services"
+              data-label="01 / Capacidades"
+            >
+              <span>01</span><strong>Serviços</strong
+              ><i aria-hidden="true">↗</i>
+            </a>
+            <a class="nav__mobile-link" href="#plans" data-label="02 / Planos">
+              <span>02</span><strong>Planos</strong><i aria-hidden="true">↗</i>
+            </a>
+            <a
+              class="nav__mobile-link"
+              href="#work"
+              data-label="03 / Portfólio"
+            >
+              <span>03</span><strong>Portfólio</strong
+              ><i aria-hidden="true">↗</i>
+            </a>
+            <a
+              class="nav__mobile-link"
+              href="#process"
+              data-label="04 / Processo"
+            >
+              <span>04</span><strong>Processo</strong
+              ><i aria-hidden="true">↗</i>
+            </a>
+            <a
+              class="nav__mobile-link"
+              href="https://wa.me/5519994853325?text=Ol%C3%A1%21%20Encontrei%20a%20Nexus%20Corp%20pelo%20site%20e%20gostaria%20de%20conversar%20sobre%20um%20projeto%20digital.%20Podem%20me%20ajudar%20a%20entender%20a%20melhor%20solu%C3%A7%C3%A3o%20para%20a%20minha%20ideia%3F"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Falar com a Nexus pelo WhatsApp"
+              data-label="05 / Contato"
+            >
+              <span>05</span><strong>Contato</strong><i aria-hidden="true">↗</i>
+            </a>
+          </nav>
+
+          <a class="nav__mobile-cta" href="#contact">
+            <span>Iniciar projeto</span><i aria-hidden="true">↗</i>
+          </a>
+
+          <p class="nav__mobile-foot">NEXUS CORP © 2026</p>
+        </div>
+
+        <div class="nav__scan" aria-hidden="true"><i></i></div>
+      </div>
+
+      <!-- Trilho sobreposto à linha: a placa fica no mesmo eixo vertical dos
+           links e, fora da barra, o brilho dela não sofre recorte. -->
+      <div class="nav__rail">
+        <a
+          class="nav__plate"
+          href="#hero"
+          aria-label="Nexus Corp — ir para o início"
+        >
+          <span class="nav__mark" aria-hidden="true">
+            <span class="nav__letter">N</span><span class="nav__letter">C</span>
+          </span>
+          <img
+            class="nav__logo"
+            src="/src/assets/nexus-logo.svg"
+            alt=""
+            aria-hidden="true"
+            width="390"
+            height="108"
+          />
+        </a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero section" id="hero">
+        <canvas
+          id="webgl"
+          data-lenis-prevent
+          aria-label="Objeto 3D interativo da Nexus Corp"
+        ></canvas>
+
+        <div class="hero-glow"></div>
+        <div class="hero-grid"></div>
+        <div class="hero-depth" aria-hidden="true">
+          <div class="hero-beams"><i></i><i></i><i></i></div>
+          <div class="hero-horizon"></div>
+          <div class="hero-data-streaks"><i></i><i></i><i></i><i></i></div>
+        </div>
+        <div class="cursor-grid" aria-hidden="true"></div>
+
+        <div class="hero-content">
+          <span class="eyebrow reveal-text">YOUR DIGITAL CORE</span>
+          <h1 class="hero-title split">Infinity <em>possibilities.</em></h1>
+          <p class="hero-copy reveal-text">
+            Sites, sistemas e experiências digitais desenvolvidos para
+            transformar ideias em produtos rápidos, escaláveis e visualmente
+            memoráveis.
+          </p>
+
+          <div class="hero-actions reveal-text">
+            <a class="button button-primary magnetic" href="#contact">
+              <span>Construir meu projeto</span>
+              <i>↗</i>
+            </a>
+            <button class="button button-ghost" id="focus-object">
+              Explorar objeto 3D
+            </button>
+          </div>
+
+          <div class="hero-meta reveal-text">
+            <div><strong>360°</strong><span>Interação touch</span></div>
+            <div><strong>60 FPS</strong><span>Experiência fluida</span></div>
+            <div><strong>WEBGL</strong><span>Visual procedural</span></div>
+          </div>
+        </div>
+
+        <div class="drag-hint">
+          <span></span>
+          Arraste para girar
+        </div>
+
+        <div class="scroll-cue">
+          <span>Scroll</span>
+          <i></i>
+        </div>
+      </section>
+
+      <section class="metrics-bar" aria-label="Diferenciais">
+        <div>ESTRATÉGIA DIGITAL</div>
+        <div>DESIGN DE INTERFACE</div>
+        <div>DESENVOLVIMENTO WEB</div>
+        <div>SISTEMAS ESCALÁVEIS</div>
+      </section>
+
+      <section class="section service-intro" id="services">
+        <div class="services-ambient" aria-hidden="true">
+          <div
+            class="services-ambient__aurora services-ambient__aurora--right"
+          ></div>
+          <div class="services-ambient__scene">
+            <svg viewBox="0 0 1600 1100" preserveAspectRatio="xMidYMid slice">
+              <g class="ambient-orbits">
+                <circle
+                  class="ambient-orbit ambient-orbit--fine"
+                  cx="1330"
+                  cy="110"
+                  r="280"
+                />
+              </g>
+              <g class="ambient-circuits">
+                <path d="M1600 525h-198l-38 38h-160l-34 34h-184" />
+              </g>
+              <g class="ambient-stars">
+                <circle cx="232" cy="822" r="1.5" />
+                <circle cx="594" cy="780" r="2" />
+                <circle cx="1108" cy="650" r="2" />
+                <circle cx="1492" cy="602" r="2" />
+              </g>
+              <g class="ambient-wave">
+                <path
+                  d="M-100 920C170 790 360 1010 650 895S1110 1030 1700 800"
+                />
+                <path
+                  d="M-100 960C170 830 360 1050 650 935S1110 1070 1700 840"
+                />
+                <path
+                  d="M-100 1000C170 870 360 1090 650 975S1110 1110 1700 880"
+                />
+                <path
+                  d="M-100 1040C170 910 360 1130 650 1015S1110 1150 1700 920"
+                />
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="section-label">CAPACIDADES</div>
+        <div class="intro-grid">
+          <h2 class="section-title split">
+            Soluções conectadas para negócios em movimento.
+          </h2>
+        </div>
+
+        <div class="services-signature" aria-hidden="true">
+          <img
+            src="/src/assets/nexus-symbol.svg"
+            alt=""
+            width="390"
+            height="470"
+            loading="lazy"
+            decoding="async"
+          />
+          <span>THREE CONNECTED CAPABILITIES</span>
+          <i></i>
+        </div>
+
+        <div class="caps" aria-label="Capacidades Nexus">
+          <article class="cap">
+            <i class="cap__rule" aria-hidden="true"></i>
+            <span class="cap__index">01 / SITES PROFISSIONAIS</span>
+            <div class="cap__icon" data-cap-icon="sites" aria-hidden="true">
+              <svg viewBox="0 0 64 64">
+                <path class="cap__frame" d="M8 14h48v36H8Z" />
+                <path class="cap__bar" d="M8 24h48" />
+                <circle class="cap__dot" cx="13" cy="19" r="1.4" />
+                <circle class="cap__dot" cx="17.6" cy="19" r="1.4" />
+                <circle class="cap__dot" cx="22.2" cy="19" r="1.4" />
+                <path class="cap__line" d="M14 32h22" />
+                <path class="cap__line" d="M14 38h30" />
+                <path class="cap__line" d="M14 44h16" />
+              </svg>
+            </div>
+            <h3 class="cap__title">
+              <span>Transforme sua presença digital.</span>
+            </h3>
+            <p class="cap__text">
+              Criamos landing pages e sites institucionais que apresentam sua
+              empresa com clareza, fortalecem sua marca e facilitam o contato
+              com novos clientes.
+            </p>
+            <div class="cap__ideal">
+              <span class="cap__ideal-label">Ideal para</span>
+              <p>
+                Empresas, profissionais e negócios que precisam criar ou
+                renovar sua presença online.
+              </p>
+            </div>
+            <a
+              class="cap__cta"
+              href="#contact"
+              aria-label="Conhecer soluções de sites profissionais"
+              >Conhecer soluções <span aria-hidden="true">→</span></a
+            >
+          </article>
+
+          <article class="cap">
+            <i class="cap__rule" aria-hidden="true"></i>
+            <span class="cap__index">02 / EXPERIÊNCIAS DIGITAIS</span>
+            <div class="cap__icon" data-cap-icon="experiencias" aria-hidden="true">
+              <svg viewBox="0 0 64 64">
+                <path class="cap__axis" d="M10 8v46h46" />
+                <path class="cap__curve" d="M10 54C24 54 24 12 54 12" />
+                <path class="cap__handle" d="M10 54h14M54 12H24" />
+                <circle class="cap__anchor" cx="10" cy="54" r="2.6" />
+                <circle class="cap__anchor" cx="54" cy="12" r="2.6" />
+                <circle class="cap__grip" cx="24" cy="54" r="3.4" />
+                <circle class="cap__grip" cx="24" cy="12" r="3.4" />
+              </svg>
+            </div>
+            <h3 class="cap__title">
+              <span>Faça sua marca ser lembrada.</span>
+            </h3>
+            <p class="cap__text">
+              Criamos experiências digitais personalizadas com design, movimento
+              e interações que ajudam sua marca a sair do convencional.
+            </p>
+            <div class="cap__ideal">
+              <span class="cap__ideal-label">Ideal para</span>
+              <p>
+                Marcas que buscam um projeto mais exclusivo, criativo e
+                visualmente marcante.
+              </p>
+            </div>
+            <a
+              class="cap__cta"
+              href="#contact"
+              aria-label="Explorar possibilidades de experiências digitais"
+              >Explorar possibilidades <span aria-hidden="true">→</span></a
+            >
+          </article>
+
+          <article class="cap">
+            <i class="cap__rule" aria-hidden="true"></i>
+            <span class="cap__index">03 / HOSPEDAGEM &amp; SUPORTE</span>
+            <div class="cap__icon" data-cap-icon="suporte" aria-hidden="true">
+              <svg viewBox="0 0 64 64">
+                <path
+                  class="cap__shield"
+                  d="M32 8c6.5 4.5 12 5.5 16 5.5v13.5c0 9.5-5.5 16.5-16 21-10.5-4.5-16-11.5-16-21V13.5c4 0 9.5-1 16-5.5Z"
+                />
+                <path class="cap__pulse" d="M21 30h5l3.5-6 5 12 4-8h5" />
+              </svg>
+            </div>
+            <h3 class="cap__title">
+              <span>Seu site continua em boas mãos.</span>
+            </h3>
+            <p class="cap__text">
+              Cuidamos da hospedagem e do acompanhamento do seu site para que
+              você possa focar no seu negócio sem se preocupar com a parte
+              técnica.
+            </p>
+            <div class="cap__ideal">
+              <span class="cap__ideal-label">Ideal para</span>
+              <p>
+                Clientes que preferem deixar a infraestrutura e o suporte sob os
+                cuidados da Nexus.
+              </p>
+            </div>
+            <a
+              class="cap__cta"
+              href="#contact"
+              aria-label="Saiba como funciona a hospedagem e o suporte"
+              >Saiba como funciona <span aria-hidden="true">→</span></a
+            >
+          </article>
+        </div>
+      </section>
+
+      <!-- PLANOS — quatro cards verticais lado a lado.
+           A MARE (.plan-tide) e o gesto que sustenta a secao: a altura do
+           liquido dentro de cada card cresce de 01 para 04, entao a fileira
+           inteira le como um grafico de escopo. O nivel vem do inline
+           `--tide` de cada <article>; ele e uma camada de FUNDO em position
+           absolute, entao mexer nele nunca reposiciona o conteudo.
+
+           Para editar um plano mexa apenas no <article class="plan-card">
+           correspondente. Para promover um plano na fileira, mude o --tide;
+           para mudar a ordem, mova o article inteiro. -->
+      <section class="section plans" id="plans">
+        <div class="plans-ambient" aria-hidden="true">
+          <span class="plans-aurora"></span>
+          <span class="plans-mesh"></span>
+        </div>
+
+        <div class="section-label">PLANOS</div>
+        <div class="intro-grid">
+          <h2 class="section-title split">
+            Quatro formatos para colocar seu negócio no ar.
+          </h2>
+          <p class="section-copy reveal-text">
+            Do site de entrada ao plano mensal com tudo incluso. Você escolhe
+            pelo momento da empresa, não pelo tamanho do orçamento.
+          </p>
+        </div>
+
+        <div class="plan-cards" aria-label="Planos Nexus">
+          <article class="plan-card plan-card--start" style="--tide: 30%">
+            <i class="plan-rule" aria-hidden="true"></i>
+            <i class="plan-glow" aria-hidden="true"></i>
+            <div class="plan-tide" aria-hidden="true">
+              <div class="plan-tide__body">
+                <svg
+                  class="plan-wave plan-wave--back"
+                  viewBox="0 0 1200 60"
+                  preserveAspectRatio="none"
+                >
+                  <path
+                    d="M0 30C75 5 225 5 300 30S525 55 600 30S825 5 900 30S1125 55 1200 30V60H0Z"
+                  />
+                </svg>
+                <svg
+                  class="plan-wave plan-wave--front"
+                  viewBox="0 0 1200 60"
+                  preserveAspectRatio="none"
+                >
+                  <path
+                    d="M0 30C75 55 225 55 300 30S525 5 600 30S825 55 900 30S1125 5 1200 30V60H0Z"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            <header class="plan-card__head">
+              <span class="plan-index">01 / START</span>
+              <div class="plan-icon" data-plan-icon="start" aria-hidden="true">
+                <svg viewBox="0 0 64 64">
+                  <path class="plan-icon__pad" d="M20 48 32 54 44 48 32 42Z" />
+                  <path class="plan-icon__stem" d="M32 42V22" />
+                  <circle class="plan-icon__node" cx="32" cy="18" r="4" />
+                  <path
+                    class="plan-icon__pulse plan-icon__pulse--near"
+                    d="M23.5 14.9A9 9 0 0 1 40.5 14.9"
+                  />
+                  <path
+                    class="plan-icon__pulse plan-icon__pulse--far"
+                    d="M18.8 13.2A14 14 0 0 1 45.2 13.2"
+                  />
+                </svg>
+              </div>
+              <h3 class="plan-name"><span>Start</span></h3>
+              <p class="plan-headline">Sua presença digital começa aqui.</p>
+              <p class="plan-ideal">
+                Para profissionais e pequenos negócios que precisam de um site
+                profissional para apresentar seus serviços e facilitar novos
+                contatos.
+              </p>
+            </header>
+
+            <div class="plan-card__body">
+              <h4 class="plan-includes">O que você recebe</h4>
+              <ul class="plan-list">
+                <li>Landing page profissional</li>
+                <li>Apresentação dos seus serviços</li>
+                <li>Galeria de fotos ou trabalhos</li>
+                <li>Contato direto pelo WhatsApp</li>
+                <li>Visual moderno em qualquer dispositivo</li>
+              </ul>
+            </div>
+
+            <div class="plan-card__notes">
+              <div class="plan-note">
+                <span class="plan-note__label">Pós-entrega</span>
+                <p class="plan-note__text">
+                  30 dias de suporte + <strong>até 1 pequena alteração</strong>
+                  de texto ou imagem.
+                </p>
+              </div>
+              <div class="plan-note">
+                <span class="plan-note__label">Hospedagem opcional</span>
+                <p class="plan-note__text">Disponível por mensalidade.</p>
+              </div>
+            </div>
+
+            <a
+              class="plan-cta"
+              href="https://wa.me/5519994853325?text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20Nexus%20e%20gostaria%20de%20saber%20mais%20sobre%20o%20plano%20Start."
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Falar no WhatsApp sobre o plano Start"
+              >Solicitar proposta <span aria-hidden="true">→</span></a
+            >
+          </article>
+
+          <article class="plan-card plan-card--pro" style="--tide: 44%">
+            <i class="plan-rule" aria-hidden="true"></i>
+            <i class="plan-glow" aria-hidden="true"></i>
+            <div class="plan-tide" aria-hidden="true">
+              <div class="plan-tide__body">
+                <svg
+                  class="plan-wave plan-wave--back"
+                  viewBox="0 0 1200 60"
+                  preserveAspectRatio="none"
+                >
+                  <path
+                    d="M0 30C75 5 225 5 300 30S525 55 600 30S825 5 900 30S1125 55 1200 30V60H0Z"
+                  />
+                </svg>
+                <svg
+                  class="plan-wave plan-wave--front"
+                  viewBox="0 0 1200 60"
+                  preserveAspectRatio="none"
+                >
+                  <path
+                    d="M0 30C75 55 225 55 300 30S525 5 600 30S825 55 900 30S1125 5 1200 30V60H0Z"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            <header class="plan-card__head">
+              <span class="plan-index">02 / PRO</span>
+              <div class="plan-icon" data-plan-icon="pro" aria-hidden="true">
+                <svg viewBox="0 0 64 64">
+                  <path class="plan-icon__pad" d="M32 12 50 21 32 30 14 21Z" />
+                  <path class="plan-icon__layer" d="M14 30.5 32 39.5 50 30.5" />
+                  <path class="plan-icon__layer" d="M14 40 32 49 50 40" />
+                </svg>
+              </div>
+              <h3 class="plan-name"><span>Pro</span></h3>
+              <p class="plan-headline">Sua empresa completa no digital.</p>
+              <p class="plan-ideal">
+                Para empresas que precisam de uma presença online mais completa,
+                profissional e alinhada à sua marca.
+              </p>
+            </header>
+
+            <div class="plan-card__body">
+              <h4 class="plan-includes">O que você recebe</h4>
+              <ul class="plan-list">
+                <li>Site completo comn ate 5 paginas</li>
+                <li>Visual personalizado para sua marca</li>
+                <li>Apresentação completa dos serviços</li>
+                <li>Melhor preparação para buscas no Google</li>
+                <li>Navegação moderna e interativa</li>
+              </ul>
+            </div>
+
+            <div class="plan-card__notes">
+              <div class="plan-note">
+                <span class="plan-note__label">Pós-entrega</span>
+                <p class="plan-note__text">
+                  30 dias de suporte +
+                  <strong>até 2 pequenas alterações</strong>
+                  de texto ou imagem.
+                </p>
+              </div>
+              <div class="plan-note">
+                <span class="plan-note__label">Hospedagem opcional</span>
+                <p class="plan-note__text">Disponível por mensalidade.</p>
+              </div>
+            </div>
+
+            <a
+              class="plan-cta"
+              href="https://wa.me/5519994853325?text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20Nexus%20e%20gostaria%20de%20saber%20mais%20sobre%20o%20plano%20Pro."
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Falar no WhatsApp sobre o plano Pro"
+              >Solicitar proposta <span aria-hidden="true">→</span></a
+            >
+          </article>
+
+          <article class="plan-card plan-card--premium" style="--tide: 58%">
+            <i class="plan-rule" aria-hidden="true"></i>
+            <i class="plan-glow" aria-hidden="true"></i>
+            <div class="plan-tide" aria-hidden="true">
+              <div class="plan-tide__body">
+                <svg
+                  class="plan-wave plan-wave--back"
+                  viewBox="0 0 1200 60"
+                  preserveAspectRatio="none"
+                >
+                  <path
+                    d="M0 30C75 5 225 5 300 30S525 55 600 30S825 5 900 30S1125 55 1200 30V60H0Z"
+                  />
+                </svg>
+                <svg
+                  class="plan-wave plan-wave--front"
+                  viewBox="0 0 1200 60"
+                  preserveAspectRatio="none"
+                >
+                  <path
+                    d="M0 30C75 55 225 55 300 30S525 5 600 30S825 55 900 30S1125 5 1200 30V60H0Z"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            <header class="plan-card__head">
+              <span class="plan-index">03 / PREMIUM</span>
+              <div
+                class="plan-icon"
+                data-plan-icon="premium"
+                aria-hidden="true"
+              >
+                <svg viewBox="0 0 64 64">
+                  <path class="plan-icon__pad" d="M32 8 52 32 32 56 12 32Z" />
+                  <path class="plan-icon__facet" d="M12 32 32 40 52 32" />
+                  <path class="plan-icon__facet" d="M32 8V40" />
+                </svg>
+              </div>
+              <h3 class="plan-name"><span>Premium</span></h3>
+              <p class="plan-headline">
+                Uma experiência digital que destaca sua marca.
+              </p>
+              <p class="plan-ideal">
+                Para empresas que querem fugir do convencional e criar uma
+                presença digital exclusiva e marcante.
+              </p>
+            </header>
+
+            <div class="plan-card__body">
+              <h4 class="plan-includes">O que você recebe</h4>
+              <ul class="plan-list">
+                <li>Site exclusivo e personalizado</li>
+                <li>Experiência visual diferenciada</li>
+                <li>Animações e interações personalizadas</li>
+                <li>Possibilidade de experiências em 3D</li>
+                <li>Estrutura criada sob medida</li>
+              </ul>
+            </div>
+
+            <div class="plan-card__notes">
+              <div class="plan-note">
+                <span class="plan-note__label">Pós-entrega</span>
+                <p class="plan-note__text">
+                  30 dias de suporte +
+                  <strong>até 3 pequenas alterações</strong>
+                  de texto ou imagem.
+                </p>
+              </div>
+              <div class="plan-note">
+                <span class="plan-note__label">Hospedagem opcional</span>
+                <p class="plan-note__text">Disponível por mensalidade.</p>
+              </div>
+            </div>
+
+            <a
+              class="plan-cta"
+              href="https://wa.me/5519994853325?text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20Nexus%20e%20gostaria%20de%20saber%20mais%20sobre%20o%20plano%20Premium."
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Falar no WhatsApp sobre o plano Premium"
+              >Criar projeto personalizado <span aria-hidden="true">→</span></a
+            >
+          </article>
+
+          <article class="plan-card plan-card--sub" style="--tide: 74%">
+            <i class="plan-rule" aria-hidden="true"></i>
+            <i class="plan-glow" aria-hidden="true"></i>
+            <div class="plan-tide" aria-hidden="true">
+              <div class="plan-tide__body">
+                <svg
+                  class="plan-wave plan-wave--back"
+                  viewBox="0 0 1200 60"
+                  preserveAspectRatio="none"
+                >
+                  <path
+                    d="M0 30C75 5 225 5 300 30S525 55 600 30S825 5 900 30S1125 55 1200 30V60H0Z"
+                  />
+                </svg>
+                <svg
+                  class="plan-wave plan-wave--front"
+                  viewBox="0 0 1200 60"
+                  preserveAspectRatio="none"
+                >
+                  <path
+                    d="M0 30C75 55 225 55 300 30S525 5 600 30S825 55 900 30S1125 5 1200 30V60H0Z"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            <header class="plan-card__head">
+              <span class="plan-index">04 / ASSINATURA</span>
+              <div class="plan-icon" data-plan-icon="sub" aria-hidden="true">
+                <svg viewBox="0 0 64 64">
+                  <path
+                    class="plan-icon__cycle"
+                    d="M41 16.4A18 18 0 1 1 23 16.4"
+                  />
+                  <path
+                    class="plan-icon__tip"
+                    d="M34.6 12.4 41 16.4 38.4 23.3"
+                  />
+                  <path class="plan-icon__pad" d="M32 26 38 32 32 38 26 32Z" />
+                </svg>
+              </div>
+              <h3 class="plan-name"><span>Assinatura</span></h3>
+              <p class="plan-headline">
+                Seu site completo por uma mensalidade.
+              </p>
+              <p class="plan-ideal">
+                Para quem prefere começar sem um investimento inicial alto e ter
+                toda a estrutura cuidada pela Nexus.
+              </p>
+            </header>
+
+            <div class="plan-card__body">
+              <h4 class="plan-includes">O que você recebe</h4>
+              <ul class="plan-list">
+                <li>Criação do seu site</li>
+                <li>Hospedagem incluída</li>
+                <li>Suporte contínuo</li>
+                <li>Pequenas atualizações mensais</li>
+                <li>Acompanhamento do site</li>
+              </ul>
+            </div>
+
+            <div class="plan-card__notes">
+              <div class="plan-note">
+                <span class="plan-note__label">Tudo em uma mensalidade</span>
+                <p class="plan-note__text">
+                  Criação, hospedagem e suporte em um único serviço.
+                </p>
+              </div>
+              <div class="plan-note plan-note--terms">
+                <span class="plan-note__label">Condições</span>
+                <p class="plan-note__text">Contrato mínimo de 12 meses.</p>
+              </div>
+            </div>
+
+            <a
+              class="plan-cta"
+              href="https://wa.me/5519994853325?text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20Nexus%20e%20gostaria%20de%20saber%20mais%20sobre%20o%20plano%20de%20Assinatura."
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Falar no WhatsApp sobre o plano de Assinatura"
+              >Conhecer assinatura <span aria-hidden="true">→</span></a
+            >
+          </article>
+        </div>
+      </section>
+
+      <!-- PORTFÓLIO — galeria horizontal.
+           Para adicionar um projeto, duplique um <article class="pg-card">
+           e ajuste imagem, categoria, título, ano e o número do .pg-num.
+           O contador "/ NN" e a barra de progresso se recalculam sozinhos. -->
+      <section class="pg" id="work" aria-labelledby="pg-heading">
+        <div class="pg-atmos" aria-hidden="true">
+          <span class="pg-aurora"></span>
+          <svg
+            class="pg-flow"
+            viewBox="0 0 1440 320"
+            preserveAspectRatio="none"
+          >
+            <path
+              d="M-60 262C240 262 300 96 640 96s430 148 920 26"
+              vector-effect="non-scaling-stroke"
+            />
+            <circle class="pg-flow__dot" r="4" />
+          </svg>
+        </div>
+
+        <div class="pg-head">
+          <div>
+            <span class="pg-label">PORTFÓLIO</span>
+            <h2 class="pg-title" id="pg-heading">
+              Projetos que já estão no ar.
+            </h2>
+            <p class="pg-copy">
+              Uma seleção de produtos digitais construídos de ponta a ponta — da
+              estratégia e do design ao deploy e à operação.
+            </p>
+          </div>
+
+          <div class="pg-nav">
+            <div class="pg-counter" aria-hidden="true">
+              <strong data-pg-current>01</strong>
+              <span data-pg-total>/ 06</span>
+            </div>
+            <div class="pg-rail" aria-hidden="true"><i></i></div>
+            <span class="pg-hint">Role para navegar</span>
+          </div>
+        </div>
+
+        <div class="pg-viewport">
+          <div class="pg-track">
+            <article class="pg-card">
+              <div class="pg-frame">
+                <div class="pg-media">
+                  <img
+                    class="pg-img pg-img--cubo"
+                    src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
+                    data-pg-src="cubo"
+                    alt="Cubo Mágico 3D — experiência interativa desenvolvida com Three.js"
+                    width="1435"
+                    height="875"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div class="pg-overlay" aria-hidden="true"></div>
+                <div class="pg-glare" aria-hidden="true"></div>
+                <span class="pg-num" aria-hidden="true">01</span>
+                <div class="pg-body">
+                  <div class="pg-tags">
+                    <span class="pg-cat">Three.js</span>
+                    <span class="pg-year">2026</span>
+                  </div>
+                  <h3 class="pg-name">Cubo Mágico 3D</h3>
+                  <a
+                    class="pg-btn"
+                    href="https://adorable-pastelito-5fd251.netlify.app/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span>Ver projeto</span>
+                    <i aria-hidden="true">↗</i>
+                  </a>
+                </div>
+              </div>
+            </article>
+
+            <article class="pg-card">
+              <div class="pg-frame">
+                <div class="pg-media">
+                  <img
+                    class="pg-img"
+                    src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
+                    data-pg-src="aura"
+                    alt="Aura — e-commerce de moda feminina de luxo, coleção Primavera-Verão 2026"
+                    width="1200"
+                    height="1500"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div class="pg-overlay" aria-hidden="true"></div>
+                <div class="pg-glare" aria-hidden="true"></div>
+                <span class="pg-num" aria-hidden="true">02</span>
+                <div class="pg-body">
+                  <div class="pg-tags">
+                    <span class="pg-cat">E-commerce</span>
+                    <span class="pg-year">2026</span>
+                  </div>
+                  <h3 class="pg-name">Aura</h3>
+                  <a
+                    class="pg-btn"
+                    href="https://auramodel.netlify.app/"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    <span>Ver projeto</span>
+                    <i aria-hidden="true">↗</i>
+                  </a>
+                </div>
+              </div>
+            </article>
+
+            <article class="pg-card">
+              <div class="pg-frame">
+                <div class="pg-media">
+                  <img
+                    class="pg-img pg-img--massas"
+                    src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
+                    data-pg-src="massas"
+                    alt="Mundo das Massas — restaurante e cardápio digital"
+                    width="1024"
+                    height="1536"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div class="pg-overlay" aria-hidden="true"></div>
+                <div class="pg-glare" aria-hidden="true"></div>
+                <span class="pg-num" aria-hidden="true">03</span>
+                <div class="pg-body">
+                  <div class="pg-tags">
+                    <span class="pg-cat">Restaurante</span>
+                    <span class="pg-year">2026</span>
+                  </div>
+                  <h3 class="pg-name">Mundo das Massas</h3>
+                  <a
+                    class="pg-btn"
+                    href="https://mundo-das-massas.vercel.app/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span>Ver projeto</span>
+                    <i aria-hidden="true">↗</i>
+                  </a>
+                </div>
+              </div>
+            </article>
+
+            <article class="pg-card">
+              <div class="pg-frame">
+                <div class="pg-media">
+                  <img
+                    class="pg-img pg-img--nexora"
+                    src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
+                    data-pg-src="nexora"
+                    alt="Nexora Construções — projetos residenciais e arquitetura contemporânea"
+                    width="1024"
+                    height="1536"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div class="pg-overlay" aria-hidden="true"></div>
+                <div class="pg-glare" aria-hidden="true"></div>
+                <span class="pg-num" aria-hidden="true">04</span>
+                <div class="pg-body">
+                  <div class="pg-tags">
+                    <span class="pg-cat">Construção</span>
+                    <span class="pg-year">2026</span>
+                  </div>
+                  <h3 class="pg-name">Nexora Construções</h3>
+                  <a
+                    class="pg-btn"
+                    href="https://voluble-tanuki-096407.netlify.app/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span>Ver projeto</span>
+                    <i aria-hidden="true">↗</i>
+                  </a>
+                </div>
+              </div>
+            </article>
+
+            <article class="pg-card">
+              <div class="pg-frame">
+                <div class="pg-media">
+                  <img
+                    class="pg-img pg-img--niveo"
+                    src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
+                    data-pg-src="niveo"
+                    alt="Níveo Precision Dental — clínica odontológica de alta precisão"
+                    width="1024"
+                    height="1536"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div class="pg-overlay" aria-hidden="true"></div>
+                <div class="pg-glare" aria-hidden="true"></div>
+                <span class="pg-num" aria-hidden="true">05</span>
+                <div class="pg-body">
+                  <div class="pg-tags">
+                    <span class="pg-cat">Odontologia</span>
+                    <span class="pg-year">2026</span>
+                  </div>
+                  <h3 class="pg-name">Níveo Precision Dental</h3>
+                  <a
+                    class="pg-btn"
+                    href="https://symphonious-rabanadas-76b168.netlify.app/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span>Ver projeto</span>
+                    <i aria-hidden="true">↗</i>
+                  </a>
+                </div>
+              </div>
+            </article>
+
+            <article class="pg-card">
+              <div class="pg-frame">
+                <div class="pg-media">
+                  <img
+                    class="pg-img pg-img--ragnarok"
+                    src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
+                    data-pg-src="ragnarok"
+                    alt="Ragnarok — landing page cinematográfica inspirada no universo de Thor"
+                    width="1892"
+                    height="925"
+                    loading="lazy"
+                    decoding="async"
+                    style="object-position: 68% center"
+                  />
+                </div>
+                <div class="pg-overlay" aria-hidden="true"></div>
+                <div class="pg-glare" aria-hidden="true"></div>
+                <span class="pg-num" aria-hidden="true">06</span>
+                <div class="pg-body">
+                  <div class="pg-tags">
+                    <span class="pg-cat">Landing Page</span>
+                    <span class="pg-year">2026</span>
+                  </div>
+                  <h3 class="pg-name">Ragnarok</h3>
+                  <a
+                    class="pg-btn"
+                    href="https://lovely-dragon-a64214.netlify.app/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span>Ver projeto</span>
+                    <i aria-hidden="true">↗</i>
+                  </a>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section process" id="process">
+        <div class="section-label">PROCESSO</div>
+        <div class="intro-grid">
+          <h2 class="section-title split">
+            Uma construção clara, do conceito ao lançamento.
+          </h2>
+          <p class="section-copy reveal-text">
+            Você acompanha cada etapa e entende exatamente o que está sendo
+            criado, sem processos obscuros ou surpresas.
+          </p>
+        </div>
+
+        <div class="process-track">
+          <div class="process-line"><span></span></div>
+
+          <article class="process-step">
+            <div class="step-node">01</div>
+            <div>
+              <span>Descoberta</span>
+              <h3>Estratégia e direção</h3>
+              <p>Objetivos, público, referências e prioridades do projeto.</p>
+            </div>
+          </article>
+
+          <article class="process-step">
+            <div class="step-node">02</div>
+            <div>
+              <span>Interface</span>
+              <h3>Design e protótipo</h3>
+              <p>Estrutura visual, navegação e validação da experiência.</p>
+            </div>
+          </article>
+
+          <article class="process-step">
+            <div class="step-node">03</div>
+            <div>
+              <span>Engenharia</span>
+              <h3>Desenvolvimento</h3>
+              <p>Implementação responsiva, animações, integrações e testes.</p>
+            </div>
+          </article>
+
+          <article class="process-step">
+            <div class="step-node">04</div>
+            <div>
+              <span>Entrega</span>
+              <h3>Lançamento e evolução</h3>
+              <p>Deploy, monitoramento, suporte e melhorias contínuas.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section contact" id="contact">
+        <canvas class="contact-shader" aria-hidden="true"></canvas>
+        <div class="contact-orbit" aria-hidden="true"></div>
+
+        <div class="contact-shell">
+          <div class="contact-content">
+            <span class="eyebrow reveal-text">START A PROJECT</span>
+            <h2 class="contact-title" data-stroke-text>
+              Vamos transformar sua ideia em experiência.
+            </h2>
+            <p class="section-copy reveal-text">
+              Compartilhe o essencial do projeto. A Nexus analisa o cenário e
+              retorna com uma direção inicial clara para o próximo passo.
+            </p>
+
+            <!-- Campo interativo + trilho de instrumento. O trilho carrega
+                 informacao real e acessivel, entao a caixa NAO pode ser role="img":
+                 conteudo dentro de role="img" nao chega a leitor de tela. O campo
+                 em si e decorativo e se descreve pela dica interna. -->
+            <div
+              class="contact-visual reveal-text"
+              data-contact-interaction
+            >
+              <span class="contact-interaction-hint" aria-hidden="true">
+                <i></i>
+                <span class="contact-hint-pointer">Mova ou arraste o campo</span>
+                <span class="contact-hint-touch">Toque e arraste o campo</span>
+              </span>
+            </div>
+
+            <a
+              class="contact-direct reveal-text"
+              href="https://wa.me/5519994853325?text=Ol%C3%A1%21%20Encontrei%20a%20Nexus%20Corp%20pelo%20site%20e%20gostaria%20de%20conversar%20sobre%20um%20projeto%20digital.%20Podem%20me%20ajudar%20a%20entender%20a%20melhor%20solu%C3%A7%C3%A3o%20para%20a%20minha%20ideia%3F"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Prefere começar sem preencher? Chame direto no WhatsApp
+              <i aria-hidden="true">↗</i>
+            </a>
+          </div>
+
+          <form class="contact-form reveal-text" id="contact-form">
+            <div class="contact-form__head">
+              <span>Fale com a Nexus</span>
+              <strong>Envie sua mensagem</strong>
+              <p>Preencha para enviar por e-mail ou fale direto pelo WhatsApp.</p>
+            </div>
+
+            <div class="contact-form__grid">
+              <label class="contact-field">
+                <span>Seu nome *</span>
+                <input
+                  type="text"
+                  name="name"
+                  autocomplete="name"
+                  placeholder="Como podemos chamar você?"
+                  required
+                />
+              </label>
+
+              <label class="contact-field">
+                <span>Seu e-mail *</span>
+                <input
+                  type="email"
+                  name="email"
+                  autocomplete="email"
+                  inputmode="email"
+                  placeholder="voce@empresa.com"
+                  required
+                />
+              </label>
+
+              <label class="contact-field contact-field--wide">
+                <span>Sua mensagem *</span>
+                <textarea
+                  name="message"
+                  rows="5"
+                  minlength="20"
+                  placeholder="Conte como podemos ajudar você."
+                  required
+                ></textarea>
+              </label>
+            </div>
+
+            <label class="contact-honey" aria-hidden="true">
+              Não preencha este campo
+              <input type="text" name="_honey" tabindex="-1" autocomplete="off" />
+            </label>
+
+            <div class="contact-form__actions">
+              <button
+                class="contact-submit contact-submit--email magnetic"
+                type="submit"
+                data-contact-email
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M2.5 5.5h19v13h-19v-13Zm1.8 1.7 7.7 5.7 7.7-5.7H4.3Zm15.4 9.6v-7.4L12 15.1 4.3 9.4v7.4h15.4Z" />
+                </svg>
+                <span>Enviar mensagem</span>
+              </button>
+
+              <a
+                class="contact-submit contact-submit--whatsapp magnetic"
+                href="https://wa.me/5519994853325?text=Ol%C3%A1%21%20Encontrei%20a%20Nexus%20Corp%20pelo%20site%20e%20gostaria%20de%20conversar%20sobre%20um%20projeto%20digital.%20Podem%20me%20ajudar%20a%20entender%20a%20melhor%20solu%C3%A7%C3%A3o%20para%20a%20minha%20ideia%3F"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Abrir o WhatsApp da Nexus com uma mensagem pronta"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M20.52 3.48A11.82 11.82 0 0 0 12.08 0C5.51 0 .16 5.35.16 11.92c0 2.1.55 4.15 1.6 5.95L.06 24l6.28-1.65a11.92 11.92 0 0 0 5.73 1.46h.01C18.65 23.81 24 18.46 24 11.89c0-3.18-1.24-6.17-3.48-8.41ZM12.08 21.8h-.01a9.9 9.9 0 0 1-5.05-1.38l-.36-.21-3.73.98 1-3.64-.23-.37a9.87 9.87 0 0 1-1.52-5.26c0-5.46 4.44-9.9 9.91-9.9a9.84 9.84 0 0 1 7 2.9 9.84 9.84 0 0 1 2.9 7c-.01 5.45-4.45 9.89-9.91 9.89Zm5.43-7.42c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.25-.46-2.38-1.47a8.93 8.93 0 0 1-1.65-2.05c-.17-.3-.02-.46.13-.6.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.91-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.08c.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.7.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35Z"
+                  />
+                </svg>
+                <span>Conversar no WhatsApp</span>
+              </a>
+            </div>
+
+            <p class="contact-form__note">
+              No envio por e-mail, os dados são processados com segurança pelo
+              serviço FormSubmit. Para usar o WhatsApp, não é necessário preencher
+              os campos: a conversa abre com uma mensagem pronta para enviar.
+            </p>
+            <p class="contact-form__status" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <a
+        class="brand footer-brand"
+        href="#hero"
+        aria-label="Nexus Corp — voltar ao início"
+      >
+        <img
+          class="brand-logo footer-brand-logo"
+          src="/src/assets/nexus-logo.svg"
+          alt="Nexus Corp"
+          width="390"
+          height="108"
+          loading="lazy"
+          decoding="async"
+        />
+      </a>
+      <p>Sites, sistemas e experiências digitais.</p>
+      <span>© 2026 Nexus Corp.</span>
+    </footer>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

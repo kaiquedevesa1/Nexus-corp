@@ -1,0 +1,94 @@
+/* ===========================================================================
+   SECTION STACK — secoes empilhadas
+
+   Cada secao da cadeia fica sticky no topo e a seguinte sobe por cima dela,
+   como uma carta puxada sobre o baralho. A que fica atras recua (escala e
+   opacidade) para dar profundidade.
+
+   Por que assim e nao com mascara: aqui so mudam `transform`, `opacity`,
+   `border-radius` e `box-shadow` de elementos inteiros — o compositor resolve
+   quase tudo na GPU e nao ha repintura da viewport a cada frame. E tambem nao
+   ha pin: o empilhamento e CSS puro (`position: sticky`), entao nenhum
+   ScrollTrigger precisa reservar altura nem disputar ordem de medicao com os
+   pins do portfolio e dos servicos.
+
+   As classes so existem com .has-section-stack, aplicada pelo
+   createSectionStack.js. Sem JS, ou em tela pequena, tudo rola normalmente.
+   ========================================================================= */
+
+.has-section-stack .section-stack {
+  position: relative;
+  /* o empilhamento nao pode escapar e cobrir o rodape */
+  isolation: isolate;
+}
+
+.has-section-stack .stack-item {
+  position: relative;
+}
+
+/* Base: fica parada enquanto a proxima sobe por cima.
+
+   O deslocamento e `top` NEGATIVO, do tamanho do que a secao passa da tela.
+   Com `top: 0` puro, uma secao mais alta que a viewport prende o proprio topo
+   e o resto dela nunca chega a ser lido — e o caso do processo no celular
+   (1119px numa tela de 844). Com `top` negativo ela so para quando a base
+   dela encosta na base da tela, ou seja, depois de ter rolado inteira.
+
+   `bottom: 0` pareceria resolver e nao resolve: por spec, sticky com `bottom`
+   empurra a caixa para CIMA sempre que ela estiver abaixo da viewport, entao
+   a secao seguinte subia cedo e cobria a anterior. `top` so empurra para
+   baixo, que e o que queremos.
+
+   --stack-h e a altura da propria secao, escrita pelo JS a cada refresh. */
+.has-section-stack .stack-base {
+  position: sticky;
+  top: min(0px, calc(100svh - var(--stack-h, 100svh)));
+  /* Nunca menor que a tela: e ela que ocupa o fundo enquanto a seguinte
+     ainda nao cobriu tudo. */
+  min-height: 100svh;
+  transform-origin: 50% 0;
+}
+
+/* Cobertura: entra com os cantos superiores arredondados e sombra propria,
+   que vao se achatando conforme ela toma a tela. */
+.has-section-stack .stack-cover {
+  border-radius: 42px 42px 0 0;
+  /* promove a camada: sem isto o arredondamento repinta a secao inteira */
+  transform: translateZ(0);
+}
+
+.stack-item.is-stack-animating {
+  will-change: transform, border-radius, box-shadow;
+}
+
+/* A secao que cobre entra pela base, entao a faixa inferior da que fica atras
+   e a primeira a sumir. Em tela larga isso nao incomoda: as secoes tem a
+   altura da tela e o conteudo e centrado. No celular o processo tem 1119px
+   numa tela de 844 e a ultima etapa fica justamente ali embaixo — medido, ela
+   ficava legivel por apenas 100px de rolagem. Esta folga existe so para ser
+   coberta, e devolve uma janela de leitura confortavel. */
+@media (max-width: 700px) {
+  .has-section-stack .stack-base {
+    /* Substitui o padding-bottom da .section (110px), nao soma — por isso o
+       valor precisa ja incluir aquele respiro. A janela de leitura medida
+       equivale a este numero. */
+    padding-bottom: clamp(190px, 26vh, 260px);
+  }
+
+}
+
+/* Alcinha no topo da cobertura, o mesmo detalhe do limite hero -> servicos. */
+.has-section-stack .stack-cover::before {
+  content: "";
+  position: absolute;
+  z-index: 6;
+  top: 15px;
+  left: 50%;
+  width: 54px;
+  height: 3px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  box-shadow: 0 0 18px rgba(90, 215, 255, 0.58);
+  pointer-events: none;
+}

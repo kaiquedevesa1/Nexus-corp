@@ -1,0 +1,81 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 390 108"
+  role="img"
+  aria-labelledby="nexus-logo-title nexus-logo-description"
+>
+  <title id="nexus-logo-title">Nexus Corp</title>
+  <desc id="nexus-logo-description">
+    Logo Nexus Corp com símbolo geométrico e assinatura vetorial.
+  </desc>
+
+  <defs>
+    <linearGradient id="logo-symbol-upper" x1="159" y1="37" x2="341" y2="385" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0D1318"/>
+      <stop offset="0.5" stop-color="#0A6C91"/>
+      <stop offset="1" stop-color="#5AD7FF"/>
+    </linearGradient>
+    <linearGradient id="logo-symbol-lower" x1="49" y1="100" x2="230" y2="436" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5AD7FF"/>
+      <stop offset="0.5" stop-color="#0A6C91"/>
+      <stop offset="1" stop-color="#0D1318"/>
+    </linearGradient>
+    <linearGradient id="logo-energy" x1="218" y1="18" x2="260" y2="62" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F4F8FA"/>
+      <stop offset="0.48" stop-color="#5AD7FF"/>
+      <stop offset="1" stop-color="#0A6C91"/>
+    </linearGradient>
+    <filter id="logo-glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="2.8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Símbolo Nexus -->
+  <g transform="translate(4 7) scale(.19)" stroke="#F4F8FA" stroke-width="12" stroke-linejoin="miter">
+    <path
+      fill="url(#logo-symbol-upper)"
+      d="M159 63 199 37 341 127 341 345 277 385 152 304 152 249 294 334 295 152Z"
+    />
+    <path
+      fill="url(#logo-symbol-lower)"
+      d="M102 100 49 131 49 345 197 436 230 413 95 330 95 159 238 249 238 190Z"
+    />
+  </g>
+
+  <!-- Wordmark geométrico -->
+  <g
+    fill="none"
+    stroke="#F4F8FA"
+    stroke-width="4"
+    stroke-linecap="square"
+    stroke-linejoin="miter"
+  >
+    <path d="M110 60V18l38 42V18"/>
+    <path d="M203 18h-36v42h36M167 39h31"/>
+    <path d="M278 18v31c0 7 4 11 11 11h17c8 0 12-4 12-11V18"/>
+    <path d="M374 18h-30c-7 0-10 4-10 10 0 7 4 11 11 11h19c7 0 11 4 11 10s-4 11-11 11h-31"/>
+  </g>
+
+  <g
+    fill="none"
+    stroke="url(#logo-energy)"
+    stroke-width="4.5"
+    stroke-linecap="square"
+    filter="url(#logo-glow)"
+  >
+    <path d="m220 18 38 42M258 18l-38 42"/>
+  </g>
+
+  <!-- Assinatura CORP e linhas técnicas -->
+  <g fill="none" stroke="#5AD7FF" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter">
+    <path d="M110 87h35M306 87h69" opacity=".75"/>
+    <path d="M178 80h-17v14h17"/>
+    <path d="M190 80h18v14h-18Z"/>
+    <path d="M221 94V80h18v7h-18M233 87l8 7"/>
+    <path d="M254 94V80h18v7h-18"/>
+  </g>
+</svg>

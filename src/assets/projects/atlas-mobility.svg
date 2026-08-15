@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1500" width="1200" height="1500" role="img" aria-label="Atlas Mobility">
+  <defs>
+    <linearGradient id="am-wash" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4AA8FF" stop-opacity=".28"/>
+      <stop offset=".6" stop-color="#4AA8FF" stop-opacity=".08"/>
+      <stop offset="1" stop-color="#05070A" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="am-glow" cx=".7" cy=".7" r=".6">
+      <stop offset="0" stop-color="#4AA8FF" stop-opacity=".26"/>
+      <stop offset="1" stop-color="#4AA8FF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="am-foot" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#05070A" stop-opacity="0"/>
+      <stop offset="1" stop-color="#05070A" stop-opacity=".92"/>
+    </linearGradient>
+    <pattern id="am-grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M60 0H0v60" fill="none" stroke="#4AA8FF" stroke-opacity=".12"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="1500" fill="#080E16"/>
+  <rect width="1200" height="1500" fill="url(#am-grid)"/>
+  <rect width="1200" height="1500" fill="url(#am-wash)"/>
+  <rect width="1200" height="1500" fill="url(#am-glow)"/>
+
+  <g stroke="#4AA8FF" fill="none">
+    <path d="M-40 420h1280M-40 980h1280" stroke-opacity=".14" stroke-width="3"/>
+    <path d="M300-40v1580M880-40v1580" stroke-opacity=".14" stroke-width="3"/>
+  </g>
+
+  <path d="M170 1200C300 1200 300 920 420 920s160-330 300-330 200-190 300-190" fill="none" stroke="#4AA8FF" stroke-width="7" stroke-linecap="round" stroke-dasharray="26 22" opacity=".9"/>
+  <circle cx="170" cy="1200" r="20" fill="#080E16" stroke="#4AA8FF" stroke-width="6"/>
+  <circle cx="1020" cy="400" r="24" fill="#F4F8FA"/>
+  <circle cx="1020" cy="400" r="54" fill="none" stroke="#4AA8FF" stroke-opacity=".45" stroke-width="3"/>
+
+  <g transform="translate(410 290)">
+    <rect width="380" height="720" rx="52" fill="#0B1420" stroke="#4AA8FF" stroke-opacity=".55" stroke-width="3"/>
+    <rect x="22" y="22" width="336" height="676" rx="38" fill="#070C13" stroke="#4AA8FF" stroke-opacity=".18" stroke-width="2"/>
+    <rect x="146" y="46" width="88" height="12" rx="6" fill="#4AA8FF" fill-opacity=".4"/>
+    <path d="M60 230c60 0 60-90 130-90s90-110 150-110" fill="none" stroke="#4AA8FF" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="60" cy="230" r="12" fill="#F4F8FA"/>
+    <rect x="56" y="330" width="268" height="14" rx="7" fill="#F4F8FA" fill-opacity=".22"/>
+    <rect x="56" y="368" width="180" height="14" rx="7" fill="#F4F8FA" fill-opacity=".12"/>
+    <rect x="56" y="436" width="268" height="122" rx="18" fill="#4AA8FF" fill-opacity=".12" stroke="#4AA8FF" stroke-opacity=".45" stroke-width="2"/>
+    <text x="86" y="498" font-family="monospace" font-size="36" fill="#4AA8FF">12 min</text>
+    <text x="86" y="538" font-family="monospace" font-size="26" fill="#F4F8FA" fill-opacity=".4">chegando</text>
+    <rect x="56" y="600" width="268" height="60" rx="30" fill="#4AA8FF"/>
+    <text x="190" y="639" text-anchor="middle" font-family="monospace" font-size="26" font-weight="700" fill="#05070A">CONFIRMAR</text>
+  </g>
+
+  <text x="150" y="1350" font-family="monospace" font-size="150" font-weight="700" fill="#4AA8FF" fill-opacity=".9" letter-spacing="8">AM</text>
+
+  <rect y="1100" width="1200" height="400" fill="url(#am-foot)"/>
+</svg>

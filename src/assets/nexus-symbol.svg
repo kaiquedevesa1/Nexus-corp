@@ -1,0 +1,41 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 390 470"
+  role="img"
+  aria-labelledby="nexus-symbol-title nexus-symbol-description"
+>
+  <title id="nexus-symbol-title">Símbolo Nexus Corp</title>
+  <desc id="nexus-symbol-description">
+    Símbolo geométrico tridimensional formado por duas estruturas conectadas.
+  </desc>
+
+  <defs>
+    <linearGradient id="nexus-upper" x1="159" y1="37" x2="341" y2="385" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0D1318"/>
+      <stop offset="0.5" stop-color="#0A6C91"/>
+      <stop offset="1" stop-color="#5AD7FF"/>
+    </linearGradient>
+
+    <linearGradient id="nexus-lower" x1="49" y1="100" x2="230" y2="436" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5AD7FF"/>
+      <stop offset="0.5" stop-color="#0A6C91"/>
+      <stop offset="1" stop-color="#0D1318"/>
+    </linearGradient>
+  </defs>
+
+  <g
+    stroke="#F4F8FA"
+    stroke-width="5.5"
+    stroke-linecap="square"
+    stroke-linejoin="miter"
+  >
+    <path
+      fill="url(#nexus-upper)"
+      d="M159 63 199 37 341 127 341 345 277 385 152 304 152 249 294 334 295 152Z"
+    />
+    <path
+      fill="url(#nexus-lower)"
+      d="M102 100 49 131 49 345 197 436 230 413 95 330 95 159 238 249 238 190Z"
+    />
+  </g>
+</svg>
