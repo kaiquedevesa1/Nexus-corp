@@ -61,10 +61,10 @@ const lenis = new Lenis({
 
 let normalizedScroll = 0;
 let heroNearViewport = true;
-let heroCoveredByServices = false;
+let heroCoveredByCapabilities = false;
 const heroGraphicsRoot = document.querySelector(".hero");
 const heroGraphicsAreActive = () =>
-  heroNearViewport && !heroCoveredByServices;
+  heroNearViewport && !heroCoveredByCapabilities;
 const syncHeroGraphicsActivity = () => {
   const active = heroGraphicsAreActive();
   heroGraphicsRoot?.classList.toggle("is-graphics-paused", !active);
@@ -217,47 +217,50 @@ intro
   )
   .to(".drag-hint", { opacity: 1, x: 0, duration: 0.7 }, "-=.4");
 
-/* Hero -> Servicos: secoes empilhadas. A hero permanece sticky no plano de
-   fundo e a service-intro sobe no fluxo normal como uma placa que a cobre. */
+/* Hero -> Capacidades: a hero permanece sticky no plano de fundo enquanto um
+   painel unico, formado pela faixa de metricas + Capacidades, sobe por cima
+   dela. Quando o painel alcança o topo, a pagina volta ao fluxo normal. */
 gsap.matchMedia().add(
   "(min-width: 701px) and (prefers-reduced-motion: no-preference)",
   () => {
     const hero = document.querySelector(".hero");
     const heroContent = hero?.querySelector(".hero-content");
+    const heroCanvas = hero?.querySelector("#webgl");
+    const heroCues = hero?.querySelectorAll(".scroll-cue, .drag-hint");
     const metrics = document.querySelector(".metrics-bar");
-    const service = document.querySelector(".service-intro");
-    const ambient = service?.querySelector(".services-ambient");
-    if (!hero || !metrics || !service) return;
+    const capabilities = document.querySelector(".service-intro");
+    const ambient = capabilities?.querySelector(".services-ambient");
+    if (!hero || !metrics || !capabilities) return;
 
-    /* O ancestral e o limite fisico do sticky. Sem ele, a hero usaria o
-       <main> inteiro e continuaria visivel atras do contato e do footer. */
+    /* O stack limita fisicamente o sticky da hero. O painel agrupa tudo que
+       deve entrar por cima dela e preserva a ordem original no fluxo. */
     const stack = document.createElement("div");
-    stack.className = "hero-service-stack";
+    const panel = document.createElement("div");
+    stack.className = "hero-capabilities-stack";
+    panel.className = "capabilities-transition-panel";
     hero.before(stack);
-    stack.append(hero, metrics, service);
+    stack.append(hero, panel);
+    panel.append(metrics, capabilities);
 
-    document.documentElement.classList.add("has-stacked-hero");
+    document.documentElement.classList.add("has-capabilities-transition");
 
     const timeline = gsap.timeline({
       defaults: { ease: "none" },
       scrollTrigger: {
-        id: "hero-services-stack",
-        trigger: service,
+        id: "hero-capabilities-transition",
+        trigger: panel,
         start: "top bottom",
         end: "top top",
-        /* O Lenis ja suaviza a entrada. Um scrub de 2s fazia a animacao
-           continuar atrasada depois de o usuario inverter o scroll. */
-        scrub: 0.42,
+        scrub: 0.34,
         invalidateOnRefresh: true,
         onToggle: ({ isActive }) =>
-          stack.classList.toggle("is-hero-transitioning", isActive),
+          stack.classList.toggle("is-transitioning", isActive),
         onUpdate: ({ progress }) => {
-          /* A hero sticky continua geometricamente dentro do viewport mesmo
-             quando Servicos ja a cobriu. IntersectionObserver sozinho nao
-             detecta essa oclusao, entao pausamos o WebGL manualmente. */
-          const covered = progress > 0.52;
-          if (covered === heroCoveredByServices) return;
-          heroCoveredByServices = covered;
+          /* O sticky continua geometricamente visivel sob o painel. A flag
+             desliga o WebGL quando Capacidades ja cobriu a maior parte dele. */
+          const covered = progress > 0.62;
+          if (covered === heroCoveredByCapabilities) return;
+          heroCoveredByCapabilities = covered;
           syncHeroGraphicsActivity();
         },
       },
@@ -267,21 +270,21 @@ gsap.matchMedia().add(
       .to(
         hero,
         {
-          scale: 0.96,
-          y: -18,
+          scale: 0.95,
+          y: -28,
           duration: 1,
         },
         0,
       )
       .to(
         heroContent,
-        { y: -26, opacity: 0.5, duration: 0.78 },
+        { y: -38, opacity: 0.18, duration: 0.72 },
         0,
       )
       .fromTo(
-        service,
+        panel,
         {
-          borderRadius: "36px 36px 0 0",
+          borderRadius: "48px 48px 0 0",
         },
         {
           borderRadius: "0px",
@@ -291,26 +294,43 @@ gsap.matchMedia().add(
         0,
       );
 
+    if (heroCanvas) {
+      timeline.to(heroCanvas, { opacity: 0.34, duration: 0.78 }, 0.08);
+    }
+
+    if (heroCues?.length) {
+      timeline.to(heroCues, { y: -14, opacity: 0, duration: 0.34 }, 0);
+    }
+
     if (ambient) {
       timeline.fromTo(
         ambient,
-        { opacity: 0.62 },
-        { opacity: 1, duration: 0.86, immediateRender: false },
-        0.08,
+        { opacity: 0.48 },
+        { opacity: 1, duration: 0.82, immediateRender: false },
+        0.12,
       );
     }
 
     return () => {
       timeline.scrollTrigger?.kill();
       timeline.kill();
-      heroCoveredByServices = false;
+      heroCoveredByCapabilities = false;
       syncHeroGraphicsActivity();
-      stack.classList.remove("is-hero-transitioning");
-      document.documentElement.classList.remove("has-stacked-hero");
-      gsap.set([hero, heroContent, service, ambient].filter(Boolean), {
-        clearProps: "all",
-      });
-      stack.before(hero, metrics, service);
+      stack.classList.remove("is-transitioning");
+      document.documentElement.classList.remove("has-capabilities-transition");
+      gsap.set(
+        [
+          hero,
+          heroContent,
+          heroCanvas,
+          ...heroCues,
+          panel,
+          ambient,
+        ].filter(Boolean),
+        { clearProps: "all" },
+      );
+      stack.before(hero, metrics, capabilities);
+      panel.remove();
       stack.remove();
     };
   },

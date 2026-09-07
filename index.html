@@ -113,6 +113,21 @@
         }
       </style>
     </noscript>
+
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-Z2YBPY785G"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-Z2YBPY785G");
+    </script>
   </head>
   <body class="loading">
     <!-- Preloader: o simbolo comeca so com o contorno e vai sendo preenchido
@@ -546,8 +561,8 @@
             <div class="cap__ideal">
               <span class="cap__ideal-label">Ideal para</span>
               <p>
-                Empresas, profissionais e negócios que precisam criar ou
-                renovar sua presença online.
+                Empresas, profissionais e negócios que precisam criar ou renovar
+                sua presença online.
               </p>
             </div>
             <a
@@ -561,7 +576,11 @@
           <article class="cap">
             <i class="cap__rule" aria-hidden="true"></i>
             <span class="cap__index">02 / EXPERIÊNCIAS DIGITAIS</span>
-            <div class="cap__icon" data-cap-icon="experiencias" aria-hidden="true">
+            <div
+              class="cap__icon"
+              data-cap-icon="experiencias"
+              aria-hidden="true"
+            >
               <svg viewBox="0 0 64 64">
                 <path class="cap__axis" d="M10 8v46h46" />
                 <path class="cap__curve" d="M10 54C24 54 24 12 54 12" />
@@ -1333,13 +1352,12 @@
                  informacao real e acessivel, entao a caixa NAO pode ser role="img":
                  conteudo dentro de role="img" nao chega a leitor de tela. O campo
                  em si e decorativo e se descreve pela dica interna. -->
-            <div
-              class="contact-visual reveal-text"
-              data-contact-interaction
-            >
+            <div class="contact-visual reveal-text" data-contact-interaction>
               <span class="contact-interaction-hint" aria-hidden="true">
                 <i></i>
-                <span class="contact-hint-pointer">Mova ou arraste o campo</span>
+                <span class="contact-hint-pointer"
+                  >Mova ou arraste o campo</span
+                >
                 <span class="contact-hint-touch">Toque e arraste o campo</span>
               </span>
             </div>
@@ -1359,7 +1377,9 @@
             <div class="contact-form__head">
               <span>Fale com a Nexus</span>
               <strong>Envie sua mensagem</strong>
-              <p>Preencha para enviar por e-mail ou fale direto pelo WhatsApp.</p>
+              <p>
+                Preencha para enviar por e-mail ou fale direto pelo WhatsApp.
+              </p>
             </div>
 
             <div class="contact-form__grid">
@@ -1400,7 +1420,12 @@
 
             <label class="contact-honey" aria-hidden="true">
               Não preencha este campo
-              <input type="text" name="_honey" tabindex="-1" autocomplete="off" />
+              <input
+                type="text"
+                name="_honey"
+                tabindex="-1"
+                autocomplete="off"
+              />
             </label>
 
             <div class="contact-form__actions">
@@ -1410,7 +1435,9 @@
                 data-contact-email
               >
                 <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M2.5 5.5h19v13h-19v-13Zm1.8 1.7 7.7 5.7 7.7-5.7H4.3Zm15.4 9.6v-7.4L12 15.1 4.3 9.4v7.4h15.4Z" />
+                  <path
+                    d="M2.5 5.5h19v13h-19v-13Zm1.8 1.7 7.7 5.7 7.7-5.7H4.3Zm15.4 9.6v-7.4L12 15.1 4.3 9.4v7.4h15.4Z"
+                  />
                 </svg>
                 <span>Enviar mensagem</span>
               </button>
@@ -1433,10 +1460,15 @@
 
             <p class="contact-form__note">
               No envio por e-mail, os dados são processados com segurança pelo
-              serviço FormSubmit. Para usar o WhatsApp, não é necessário preencher
-              os campos: a conversa abre com uma mensagem pronta para enviar.
+              serviço FormSubmit. Para usar o WhatsApp, não é necessário
+              preencher os campos: a conversa abre com uma mensagem pronta para
+              enviar.
             </p>
-            <p class="contact-form__status" role="status" aria-live="polite"></p>
+            <p
+              class="contact-form__status"
+              role="status"
+              aria-live="polite"
+            ></p>
           </form>
         </div>
       </section>
